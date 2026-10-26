@@ -1,0 +1,13 @@
+{
+  "name": "limitup-hayek",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "每日 A 股涨停 · 哈耶克三角分布看板",
+  "scripts": {
+    "fetch": "node scripts/fetch.mjs",
+    "test": "node --test",
+    "build-map": "node scripts/build-map.mjs",
+    "serve": "python -m http.server 8765"
+  }
+}

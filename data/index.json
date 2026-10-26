@@ -1,0 +1,28 @@
+{
+  "updatedAt": "2026-10-26T07:22:28.142Z",
+  "days": [
+    {
+      "date": "2026-10-26",
+      "total": 55,
+      "stages": {
+        "科技": 19,
+        "能源": 4,
+        "交通": 1,
+        "制造加工": 17,
+        "外贸": 3,
+        "零售": 4,
+        "终端消费品": 7
+      },
+      "unclassified": 0,
+      "boards": {
+        "first": 40,
+        "second": 8,
+        "thirdPlus": 7,
+        "max": 4
+      },
+      "center": 3.38,
+      "centerLabel": "中游",
+      "strongestStage": "科技"
+    }
+  ]
+}

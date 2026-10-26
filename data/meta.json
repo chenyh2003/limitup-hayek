@@ -1,0 +1,14 @@
+{
+  "title": "涨停 · 哈耶克三角",
+  "subtitle": "每日 A 股涨停结构分布",
+  "universe": "沪深A股，剔除ST与北交所",
+  "stages": [
+    { "key": "科技", "index": 1, "group": "上游资本品", "color": "#6C5CE7" },
+    { "key": "能源", "index": 2, "group": "上游资本品", "color": "#3B82F6", "note": "含矿产/农业/金融" },
+    { "key": "交通", "index": 3, "group": "中游生产与流通", "color": "#06B6D4" },
+    { "key": "制造加工", "index": 4, "group": "中游生产与流通", "color": "#10B981" },
+    { "key": "外贸", "index": 5, "group": "中游生产与流通", "color": "#84CC16" },
+    { "key": "零售", "index": 6, "group": "下游消费", "color": "#F59E0B" },
+    { "key": "终端消费品", "index": 7, "group": "下游消费", "color": "#EF4444" }
+  ]
+}
