@@ -1,5 +1,23 @@
+import { FEATURES } from './features.js';
+
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+
+const analysisParam = new URLSearchParams(location.search).get('analysis');
+
+function initialAnalysisVisible() {
+  if (!FEATURES.analysisBeta) return false;
+  if (analysisParam === 'off' || analysisParam === '0') return false;
+  if (analysisParam === 'on' || analysisParam === '1') return true;
+  try {
+    const stored = localStorage.getItem('limitup.analysisVisible');
+    if (stored === '0') return false;
+    if (stored === '1') return true;
+  } catch {
+    // localStorage is unavailable in some privacy modes.
+  }
+  return true;
+}
 
 const state = {
   meta: null,
@@ -7,7 +25,9 @@ const state = {
   day: null,
   selectedStage: null,
   query: '',
-  sort: 'lianban'
+  sort: 'lianban',
+  analysisVisible: initialAnalysisVisible(),
+  analysisForcedOff: analysisParam === 'off' || analysisParam === '0'
 };
 
 const els = {
@@ -42,6 +62,11 @@ const els = {
   tableEmpty: $('#table-empty'),
   search: $('#search'),
   sort: $('#sort'),
+  analysisPanel: $('#analysis-panel'),
+  analysisBody: $('#analysis-body'),
+  analysisEmpty: $('#analysis-empty'),
+  analysisSub: $('#analysis-sub'),
+  analysisToggle: $('#analysis-toggle'),
   universe: $('#universe'),
   errorBanner: $('#error-banner'),
   errorMessage: $('#error-message'),
@@ -110,6 +135,28 @@ function shortGroup(group) {
   return String(group || '').replace('资本品', '').replace('生产与流通', '');
 }
 
+function analysisTags(reason) {
+  return [...new Set(
+    String(reason || '')
+      .split(/[+＋、,，;；]/)
+      .map(part => part.trim())
+      .filter(Boolean)
+  )].slice(0, 4);
+}
+
+function filteredStocks() {
+  const q = state.query.trim().toLowerCase();
+  return state.day.stocks.filter(s => {
+    if (state.selectedStage === '未分类') {
+      if (s.stage !== '未分类') return false;
+    } else if (state.selectedStage && s.stage !== state.selectedStage) {
+      return false;
+    }
+    if (!q) return true;
+    return s.code.includes(q) || String(s.name).toLowerCase().includes(q);
+  });
+}
+
 function previousDay(date) {
   const days = state.index?.days || [];
   const idx = days.findIndex(d => d.date === date);
@@ -167,7 +214,11 @@ async function selectDate(date, { updateHash = true } = {}) {
     state.day = day;
     state.selectedStage = null;
     if (els.dateSelect.value !== date) els.dateSelect.value = date;
-    if (updateHash) history.replaceState(null, '', `#${date}`);
+    if (updateHash) {
+      const nextUrl = new URL(location.href);
+      nextUrl.hash = date;
+      history.replaceState(null, '', nextUrl);
+    }
     renderAll();
     hideError();
   } catch (err) {
@@ -185,6 +236,7 @@ function renderAll() {
   renderStageRanking();
   renderStageFilter();
   renderStocks();
+  renderAnalysis();
   renderTrend();
 
   els.updated.textContent = `采集于 ${fmtStamp(state.day.capturedAt)} · 共 ${state.index.days.length} 个交易日`;
@@ -384,16 +436,7 @@ function renderStageFilter() {
 
 function renderStocks() {
   const d = state.day;
-  const q = state.query.trim().toLowerCase();
-  let rows = d.stocks.filter(s => {
-    if (state.selectedStage === '未分类') {
-      if (s.stage !== '未分类') return false;
-    } else if (state.selectedStage && s.stage !== state.selectedStage) {
-      return false;
-    }
-    if (!q) return true;
-    return s.code.includes(q) || String(s.name).toLowerCase().includes(q);
-  });
+  let rows = filteredStocks();
 
   const sorters = {
     lianban: (a, b) => b.lianban - a.lianban || b.sealFund - a.sealFund,
@@ -425,6 +468,87 @@ function renderStocks() {
   }).join('');
 
   els.tableEmpty.hidden = rows.length !== 0;
+}
+
+function renderAnalysis() {
+  if (!FEATURES.analysisBeta || state.analysisForcedOff) {
+    els.analysisPanel.hidden = true;
+    return;
+  }
+
+  els.analysisPanel.hidden = false;
+  els.analysisToggle.textContent = state.analysisVisible ? '隐藏' : '开启';
+  els.analysisToggle.setAttribute('aria-pressed', String(state.analysisVisible));
+  els.analysisBody.hidden = !state.analysisVisible;
+  els.analysisEmpty.hidden = true;
+
+  if (!state.analysisVisible) {
+    els.analysisSub.textContent = '测试功能已隐藏 · 点击右侧按钮开启';
+    els.analysisBody.innerHTML = '';
+    return;
+  }
+
+  const d = state.day;
+  const rows = filteredStocks()
+    .slice()
+    .sort((a, b) => b.lianban - a.lianban || b.sealFund - a.sealFund);
+  const scope = state.selectedStage === '未分类'
+    ? '未分类'
+    : state.selectedStage || '全部';
+  const searchText = state.query.trim() ? ` · 搜索“${state.query.trim()}”` : '';
+  els.analysisSub.textContent = `${scope} · ${rows.length} 只 · 按连板排序${searchText}`;
+
+  if (!rows.length) {
+    els.analysisBody.innerHTML = '';
+    els.analysisEmpty.hidden = false;
+    els.analysisEmpty.textContent = '当前筛选下没有涨停股';
+    return;
+  }
+
+  if (!rows.some(s => s.reason || s.mainBusiness)) {
+    els.analysisBody.innerHTML = '';
+    els.analysisEmpty.hidden = false;
+    els.analysisEmpty.textContent = '当日原因/主营数据暂缺，主看板不受影响';
+    return;
+  }
+
+  els.analysisBody.innerHTML = rows.map(s => {
+    const tags = analysisTags(s.reason);
+    const badgeClass = s.lianban >= 3 ? 'b3' : s.lianban === 2 ? 'b2' : 'b1';
+    const color = stageColor(s.stage);
+    const reasonHtml = tags.length
+      ? tags.map(tag => `<span class="reason-chip">${escapeHtml(tag)}</span>`).join('')
+      : '<span class="reason-chip empty">暂无原因标签</span>';
+    const business = s.mainBusiness || '';
+    const summary = [
+      `属${s.stage}环节`,
+      s.lianban >= 2 ? `${s.lianban}连板` : '首板',
+      tags.length ? `原因标签集中在${tags.slice(0, 3).join('、')}` : '暂无明确原因标签'
+    ];
+    return `<article class="analysis-card" data-stage="${escapeHtml(s.stage)}">
+      <div class="analysis-card-head">
+        <div class="analysis-card-title">
+          <span class="code">${escapeHtml(s.code)}</span>
+          <span class="stock-name">${escapeHtml(s.name)}</span>
+        </div>
+        <span class="board-badge ${badgeClass}">${escapeHtml(s.boardLabel)}</span>
+      </div>
+      <div class="analysis-meta">
+        <span class="stage-chip"><i style="background:${color}"></i>${escapeHtml(s.stage)}</span>
+        <span>首封 ${escapeHtml(s.firstSeal || '—')}</span>
+        <span>封单 ${fmtMoney(s.sealFund)}</span>
+        ${s.daysBoard ? `<span>${escapeHtml(s.daysBoard)}</span>` : ''}
+      </div>
+      <div class="analysis-reason">
+        <span class="analysis-label">原因</span>${reasonHtml}
+      </div>
+      <div class="analysis-business">
+        <span class="analysis-label">主营</span>
+        <p title="${escapeHtml(business)}">${escapeHtml(business || '暂无主营数据')}</p>
+      </div>
+      <p class="analysis-summary">简析：${summary.join('；')}。</p>
+    </article>`;
+  }).join('');
 }
 
 function renderTrend() {
@@ -508,12 +632,23 @@ function bindEvents() {
     searchTimer = setTimeout(() => {
       state.query = els.search.value;
       renderStocks();
+      renderAnalysis();
     }, 120);
   });
 
   els.sort.addEventListener('change', () => {
     state.sort = els.sort.value;
     renderStocks();
+  });
+
+  els.analysisToggle.addEventListener('click', () => {
+    state.analysisVisible = !state.analysisVisible;
+    try {
+      localStorage.setItem('limitup.analysisVisible', state.analysisVisible ? '1' : '0');
+    } catch {
+      // Ignore storage failures; the toggle still works for this page view.
+    }
+    renderAnalysis();
   });
 
   els.stageFilter.addEventListener('click', event => {
@@ -663,6 +798,8 @@ function renderEmpty() {
   els.tableEmpty.hidden = false;
   els.trend.innerHTML = '<text class="trend-empty" x="500" y="150">暂无历史数据</text>';
   els.trendLegend.innerHTML = '';
+  els.analysisPanel.hidden = true;
+  els.analysisBody.innerHTML = '';
 }
 
 async function boot() {

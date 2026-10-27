@@ -143,6 +143,21 @@
         </div>
         <div id="table-empty" class="empty" hidden>没有符合条件的涨停股</div>
       </section>
+
+      <section class="panel analysis-panel" id="analysis-panel" hidden>
+        <div class="panel-head analysis-head">
+          <div>
+            <h2>涨停原因分析 <span class="beta-badge">BETA</span></h2>
+            <p class="panel-sub" id="analysis-sub">同花顺原因标签 + 东方财富 F10 主营 · 测试版</p>
+          </div>
+          <button id="analysis-toggle" class="ghost-button" type="button" aria-pressed="true">隐藏</button>
+        </div>
+        <div id="analysis-body" class="analysis-grid"></div>
+        <div id="analysis-empty" class="empty" hidden>暂无原因数据</div>
+        <p class="analysis-note" id="analysis-note">
+          原因标签来自同花顺涨停池，主营业务来自东方财富 F10；简析为规则拼接，仅作测试，不构成投资建议。
+        </p>
+      </section>
     </main>
 
     <footer class="footer">

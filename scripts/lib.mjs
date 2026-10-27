@@ -91,3 +91,38 @@ export function updateIndex(index, day, updatedAt) {
   days.sort((a, b) => a.date.localeCompare(b.date));
   return { updatedAt, days };
 }
+
+export function cleanBusiness(value) {
+  return String(value || '')
+    .replace(/\s*[,，、;；]\s*/g, '、')
+    .replace(/\s+/g, ' ')
+    .replace(/^[、\s]+|[、\s。.;；]+$/g, '')
+    .trim();
+}
+
+export function reasonTags(value) {
+  return [...new Set(
+    String(value || '')
+      .split(/[+＋、,，;；]/)
+      .map(part => part.trim())
+      .filter(Boolean)
+  )].slice(0, 6);
+}
+
+export function mergeReasonMap(info) {
+  const map = new Map();
+  for (const item of info || []) {
+    const code = String(item.code || '').padStart(6, '0');
+    if (!/^\d{6}$/.test(code)) continue;
+    const reason = String(item.reason_type || '').trim();
+    if (reason) map.set(code, reason);
+  }
+  return map;
+}
+
+export function isProfileFresh(entry, now = Date.now(), maxAgeDays = 90) {
+  if (!entry?.mainBusiness || !entry?.updatedAt) return false;
+  const updated = Date.parse(entry.updatedAt);
+  if (!Number.isFinite(updated)) return false;
+  return now - updated < maxAgeDays * 86400000;
+}

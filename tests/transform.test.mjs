@@ -1,7 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  isExcluded, formatSealTime, classify, summarize, buildIndexDay, updateIndex
+  isExcluded, formatSealTime, classify, summarize, buildIndexDay, updateIndex,
+  cleanBusiness, reasonTags, mergeReasonMap, isProfileFresh
 } from '../scripts/lib.mjs';
 
 const stages = [
@@ -76,6 +77,37 @@ test('索引行只保留聚合字段', () => {
   });
   assert.deepEqual(day.stages, { 科技: 2 });
   assert.equal(day.date, '2026-10-26');
+});
+
+test('主营文本清洗', () => {
+  assert.equal(cleanBusiness('百货零售,商业物业，洗染服务。'), '百货零售、商业物业、洗染服务');
+  assert.equal(cleanBusiness(' 软件 , 硬件 ; 服务 '), '软件、硬件、服务');
+  assert.equal(cleanBusiness(''), '');
+});
+
+test('原因标签拆分、去重并限制数量', () => {
+  assert.deepEqual(reasonTags('机器人+无框电机+机器人'), ['机器人', '无框电机']);
+  assert.deepEqual(reasonTags('车路协同+智慧交通、机器人应用'), ['车路协同', '智慧交通', '机器人应用']);
+  assert.deepEqual(reasonTags(''), []);
+  assert.deepEqual(reasonTags('a+b+c+d+e+f+g'), ['a', 'b', 'c', 'd', 'e', 'f']);
+});
+
+test('同花顺原因池按代码合并', () => {
+  const map = mergeReasonMap([
+    { code: '600838', reason_type: '新零售+国企改革' },
+    { code: '000001', reason_type: '' },
+    { code: '12345', reason_type: '测试' }
+  ]);
+  assert.equal(map.size, 2);
+  assert.equal(map.get('600838'), '新零售+国企改革');
+  assert.equal(map.get('012345'), '测试');
+});
+
+test('主营缓存新鲜度', () => {
+  const now = Date.parse('2026-06-01T00:00:00Z');
+  assert.equal(isProfileFresh({ mainBusiness: '软件', updatedAt: '2026-05-01T00:00:00Z' }, now), true);
+  assert.equal(isProfileFresh({ mainBusiness: '软件', updatedAt: '2025-12-01T00:00:00Z' }, now), false);
+  assert.equal(isProfileFresh({ mainBusiness: '', updatedAt: '2026-05-01T00:00:00Z' }, now), false);
 });
 
 test('索引去重、排序并保留最新日期', () => {
