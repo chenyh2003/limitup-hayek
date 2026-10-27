@@ -1,11 +1,11 @@
 {
   "date": "2026-10-27",
-  "capturedAt": "2026-10-27T07:31:46.031Z",
+  "capturedAt": "2026-10-27T13:27:34.373Z",
   "source": "eastmoney:getTopicZTPool",
   "universe": "沪深A股，剔除ST与北交所",
   "analysis": {
     "enabled": true,
-    "withReason": 40,
+    "withReason": 41,
     "withMainBusiness": 41
   },
   "total": 41,
@@ -674,7 +674,7 @@
       "broken": 1,
       "industry": "旅游及景",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "景区索道+文旅产业+冰雪旅游",
       "mainBusiness": "峨眉山风景区游山票、客运索道、宾馆酒店服务以及其他相关旅游服务的经营"
     },
     {
