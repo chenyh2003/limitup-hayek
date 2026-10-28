@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   isExcluded, formatSealTime, classify, summarize, buildIndexDay, updateIndex,
-  cleanBusiness, reasonTags, mergeReasonMap, isProfileFresh
+  cleanBusiness, reasonTags, mergeReasonMap, isProfileFresh, computePromotion
 } from '../scripts/lib.mjs';
 
 const stages = [
@@ -108,6 +108,52 @@ test('主营缓存新鲜度', () => {
   assert.equal(isProfileFresh({ mainBusiness: '软件', updatedAt: '2026-05-01T00:00:00Z' }, now), true);
   assert.equal(isProfileFresh({ mainBusiness: '软件', updatedAt: '2025-12-01T00:00:00Z' }, now), false);
   assert.equal(isProfileFresh({ mainBusiness: '', updatedAt: '2026-05-01T00:00:00Z' }, now), false);
+});
+
+test('7日晋级率：涨停涨停未涨停涨停 = 75%', () => {
+  const history = [
+    { date: '2026-10-19', codes: ['600838'] },
+    { date: '2026-10-20', codes: ['600838'] },
+    { date: '2026-10-21', codes: [] },
+    { date: '2026-10-22', codes: ['600838'] }
+  ];
+  const result = computePromotion(history, '2026-10-22');
+  assert.equal(result.window, 4);
+  assert.equal(result.stocks['600838'].first, '2026-10-19');
+  assert.equal(result.stocks['600838'].hits, 3);
+  assert.equal(result.stocks['600838'].observed, 4);
+  assert.equal(result.stocks['600838'].rate, 0.75);
+  assert.equal(result.sample, 1);
+  assert.equal(result.rate, 0.75);
+  assert.equal(result.hits, 3);
+  assert.equal(result.observed, 4);
+});
+
+test('7日晋级率：首次观察当日不计入平均样本', () => {
+  const history = [
+    { date: '2026-10-21', codes: [] },
+    { date: '2026-10-22', codes: ['000001'] }
+  ];
+  const result = computePromotion(history, '2026-10-22');
+  assert.equal(result.stocks['000001'].observed, 1);
+  assert.equal(result.sample, 0);
+  assert.equal(result.rate, null);
+});
+
+test('7日晋级率：卡片合计命中率与个股平均晋级率分开', () => {
+  const history = [
+    { date: '2026-10-19', codes: ['A'] },
+    { date: '2026-10-20', codes: ['A', 'B'] },
+    { date: '2026-10-21', codes: ['A'] }
+  ];
+  const result = computePromotion(history, '2026-10-21');
+  assert.equal(result.stocks.A.rate, 1);
+  assert.equal(result.stocks.B.rate, 0.5);
+  assert.equal(result.sample, 2);
+  assert.equal(result.hits, 4);
+  assert.equal(result.observed, 5);
+  assert.equal(result.rate, 0.8);
+  assert.equal(result.averageRate, 0.75);
 });
 
 test('索引去重、排序并保留最新日期', () => {

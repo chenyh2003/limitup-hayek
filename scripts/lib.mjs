@@ -126,3 +126,52 @@ export function isProfileFresh(entry, now = Date.now(), maxAgeDays = 90) {
   if (!Number.isFinite(updated)) return false;
   return now - updated < maxAgeDays * 86400000;
 }
+
+export function computePromotion(history, targetDate, windowSize = 7) {
+  const targetIndex = history.findIndex(day => day.date === targetDate);
+  if (targetIndex < 0) return null;
+  const window = history.slice(Math.max(0, targetIndex - windowSize + 1), targetIndex + 1);
+  const map = new Map();
+
+  window.forEach((day, index) => {
+    for (const code of day.codes || []) {
+      if (!map.has(code)) {
+        map.set(code, { first: day.date, firstIndex: index, hits: 0 });
+      }
+      map.get(code).hits += 1;
+    }
+  });
+
+  const stocks = {};
+  let sumRate = 0;
+  let sample = 0;
+  let hitsTotal = 0;
+  let observedTotal = 0;
+
+  for (const [code, item] of map) {
+    const observed = window.length - item.firstIndex;
+    const rate = item.hits / observed;
+    stocks[code] = {
+      first: item.first,
+      hits: item.hits,
+      observed,
+      rate: Number(rate.toFixed(4))
+    };
+    if (observed >= 2) {
+      sumRate += rate;
+      sample += 1;
+      hitsTotal += item.hits;
+      observedTotal += observed;
+    }
+  }
+
+  return {
+    window: window.length,
+    sample,
+    rate: observedTotal ? Number((hitsTotal / observedTotal).toFixed(4)) : null,
+    averageRate: sample ? Number((sumRate / sample).toFixed(4)) : null,
+    hits: hitsTotal,
+    observed: observedTotal,
+    stocks
+  };
+}

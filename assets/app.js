@@ -23,6 +23,7 @@ const state = {
   meta: null,
   index: null,
   day: null,
+  promotion: null,
   selectedStage: null,
   query: '',
   sort: 'lianban',
@@ -36,8 +37,9 @@ const els = {
   refresh: $('#refresh'),
   total: $('#stat-total'),
   delta: $('#stat-delta'),
-  lianban: $('#stat-lianban'),
-  lianbanShare: $('#stat-lianban-share'),
+  promotion: $('#stat-promotion'),
+  promotionFoot: $('#stat-promotion-foot'),
+  promotionUnit: $('#stat-promotion-unit'),
   strongest: $('#stat-strongest'),
   strongestFoot: $('#stat-strongest-foot'),
   center: $('#stat-center'),
@@ -260,11 +262,13 @@ function renderStats() {
       : `较 ${fmtDate(prev.date)} <span class="${diff > 0 ? 'up' : 'down'}">${fmtSigned(diff)}</span> 只`;
   }
 
-  const lianban = d.boards.second + d.boards.thirdPlus;
-  els.lianban.textContent = fmtInt(lianban);
-  els.lianbanShare.textContent = d.total
-    ? `2板+ 占涨停 ${fmtPct(lianban / d.total)} · 最高 ${d.boards.max} 板`
-    : '今日无涨停';
+  const promotion = state.promotion?.days?.[d.date];
+  const promotionRate = promotion?.rate;
+  els.promotion.textContent = promotionRate == null ? '—' : (promotionRate * 100).toFixed(1);
+  els.promotionUnit.hidden = promotionRate == null;
+  els.promotionFoot.textContent = promotionRate == null
+    ? (promotion ? '样本观察中（需≥2日）' : '暂无 7 日样本')
+    : `样本 ${fmtInt(promotion.sample)} 只 · 命中 ${fmtInt(promotion.hits)}/${fmtInt(promotion.observed)} 天`;
 
   const strongest = stageMeta(d.strongestStage);
   const strongestStat = d.stages.find(s => s.key === d.strongestStage);
@@ -520,6 +524,12 @@ function renderAnalysis() {
       ? tags.map(tag => `<span class="reason-chip">${escapeHtml(tag)}</span>`).join('')
       : '<span class="reason-chip empty">暂无原因标签</span>';
     const business = s.mainBusiness || '';
+    const promotional = state.promotion?.days?.[d.date]?.stocks?.[s.code];
+    const promoHtml = promotional
+      ? promotional.observed >= 2
+        ? `<span class="promo-chip" title="7日窗口：命中 ${promotional.hits} / 观察 ${promotional.observed} 天">7日晋级 ${(promotional.rate * 100).toFixed(0)}%</span>`
+        : '<span class="promo-chip muted">首次涨停 · 观察中</span>'
+      : '';
     const summary = [
       `属${s.stage}环节`,
       s.lianban >= 2 ? `${s.lianban}连板` : '首板',
@@ -538,6 +548,7 @@ function renderAnalysis() {
         <span>首封 ${escapeHtml(s.firstSeal || '—')}</span>
         <span>封单 ${fmtMoney(s.sealFund)}</span>
         ${s.daysBoard ? `<span>${escapeHtml(s.daysBoard)}</span>` : ''}
+        ${promoHtml}
       </div>
       <div class="analysis-reason">
         <span class="analysis-label">原因</span>${reasonHtml}
@@ -764,8 +775,12 @@ function toggleStage(stage) {
 async function refresh() {
   els.refresh.classList.add('spinning');
   try {
-    const index = await loadJson('data/index.json');
+    const [index, promotion] = await Promise.all([
+      loadJson('data/index.json'),
+      loadJson('data/promotion.json').catch(() => state.promotion)
+    ]);
     state.index = index;
+    if (promotion) state.promotion = promotion;
     populateDates();
     const desired = state.day?.date && index.days.some(d => d.date === state.day.date)
       ? state.day.date
@@ -783,8 +798,9 @@ async function refresh() {
 function renderEmpty() {
   els.total.textContent = '0';
   els.delta.textContent = '暂无数据';
-  els.lianban.textContent = '0';
-  els.lianbanShare.textContent = '请先运行抓取脚本';
+  els.promotion.textContent = '—';
+  els.promotionUnit.hidden = true;
+  els.promotionFoot.textContent = '请先运行抓取脚本';
   els.strongest.textContent = '—';
   els.strongestFoot.textContent = '暂无数据';
   els.center.textContent = '—';
@@ -805,12 +821,14 @@ function renderEmpty() {
 async function boot() {
   hideError();
   try {
-    const [meta, index] = await Promise.all([
+    const [meta, index, promotion] = await Promise.all([
       loadJson('data/meta.json'),
-      loadJson('data/index.json')
+      loadJson('data/index.json'),
+      loadJson('data/promotion.json').catch(() => null)
     ]);
     state.meta = meta;
     state.index = index;
+    state.promotion = promotion;
     if (!index.days?.length) {
       renderEmpty();
       return;

@@ -3,12 +3,14 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   isExcluded, formatSealTime, classify, boardLabel, summarize, buildIndexDay, updateIndex,
-  cleanBusiness, mergeReasonMap, isProfileFresh
+  cleanBusiness, mergeReasonMap, isProfileFresh, computePromotion
 } from './lib.mjs';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const dataDir = path.join(root, 'data');
 const profileCachePath = path.join(dataDir, 'profiles.json');
+const promotionPath = path.join(dataDir, 'promotion.json');
+const historyPath = path.join(dataDir, 'limitup_history.json');
 const meta = JSON.parse(fs.readFileSync(path.join(dataDir, 'meta.json'), 'utf8'));
 const hayekMap = JSON.parse(fs.readFileSync(path.join(dataDir, 'hayek_map.json'), 'utf8'));
 const analysisEnabled = process.env.ANALYSIS !== '0' && !process.argv.includes('--no-analysis');
@@ -93,6 +95,107 @@ async function fetchMainBusiness(code) {
   }).forEach(([k, v]) => profileUrl.searchParams.set(k, v));
   const payload = await fetchJson(profileUrl, { Referer: 'https://emweb.securities.eastmoney.com/' }, 2);
   return cleanBusiness(payload?.result?.data?.[0]?.MAIN_BUSINESS || '');
+}
+
+function compactToDate(compact) {
+  return new Date(Date.UTC(
+    Number(compact.slice(0, 4)),
+    Number(compact.slice(4, 6)) - 1,
+    Number(compact.slice(6, 8))
+  ));
+}
+
+function dateToCompact(date) {
+  const y = date.getUTCFullYear();
+  const m = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const d = String(date.getUTCDate()).padStart(2, '0');
+  return `${y}${m}${d}`;
+}
+
+function shiftCompact(compact, days) {
+  const date = compactToDate(compact);
+  date.setUTCDate(date.getUTCDate() + days);
+  return dateToCompact(date);
+}
+
+function compactToIso(compact) {
+  return `${compact.slice(0, 4)}-${compact.slice(4, 6)}-${compact.slice(6, 8)}`;
+}
+
+async function fetchPoolCodes(compact) {
+  const url = new URL(poolUrl);
+  url.searchParams.set('date', compact);
+  try {
+    const payload = await fetchJson(url, { Referer: 'https://quote.eastmoney.com/' }, 2);
+    const data = payload?.data;
+    if (!data || !Array.isArray(data.pool)) return null;
+    const seen = new Set();
+    return data.pool
+      .filter(item => !isExcluded(item))
+      .map(item => String(item.c))
+      .filter(code => {
+        if (seen.has(code)) return false;
+        seen.add(code);
+        return true;
+      });
+  } catch (err) {
+    console.warn(`历史涨停池获取失败 ${compact}：${err.message}`);
+    return null;
+  }
+}
+
+function loadPromotion() {
+  try {
+    const raw = JSON.parse(fs.readFileSync(promotionPath, 'utf8'));
+    return {
+      updatedAt: raw.updatedAt || null,
+      window: raw.window || 7,
+      days: raw.days && typeof raw.days === 'object' ? raw.days : {}
+    };
+  } catch {
+    return { updatedAt: null, window: 7, days: {} };
+  }
+}
+
+async function buildPromotion(todayStocks) {
+  const history = [];
+  let cursor = dateCompact;
+  for (let guard = 0; guard < 30 && history.length < 8; guard += 1) {
+    const day = compactToDate(cursor);
+    const weekday = day.getUTCDay();
+    if (weekday !== 0 && weekday !== 6) {
+      const codes = cursor === dateCompact
+        ? todayStocks.map(stock => stock.code)
+        : await fetchPoolCodes(cursor);
+      if (codes) history.push({ date: compactToIso(cursor), codes });
+    }
+    cursor = shiftCompact(cursor, -1);
+  }
+  history.reverse();
+  fs.writeFileSync(historyPath, JSON.stringify({
+    updatedAt: new Date().toISOString(),
+    days: history
+  }, null, 2), 'utf8');
+
+  const promotion = loadPromotion();
+  for (const day of history.slice(-2)) {
+    const value = computePromotion(history, day.date);
+    if (value) promotion.days[day.date] = value;
+  }
+  promotion.window = 7;
+  promotion.updatedAt = new Date().toISOString();
+
+  const dates = Object.keys(promotion.days).sort();
+  for (const old of dates.slice(0, Math.max(0, dates.length - 180))) {
+    delete promotion.days[old];
+  }
+  fs.writeFileSync(promotionPath, JSON.stringify(promotion, null, 2), 'utf8');
+
+  return {
+    historyDays: history.length,
+    latest: promotion.days[history.at(-1)?.date] || null,
+    latestDate: history.at(-1)?.date || null
+  };
 }
 
 function loadProfileCache() {
@@ -211,6 +314,7 @@ const stocks = rawPool
   );
 
 const analysisStats = await enrichStocks(stocks);
+const promotionStats = await buildPromotion(stocks);
 const summary = summarize(stocks, meta.stages);
 const date = `${dateCompact.slice(0, 4)}-${dateCompact.slice(4, 6)}-${dateCompact.slice(6, 8)}`;
 const snapshot = {
@@ -241,6 +345,11 @@ console.log(`${date}: 涨停 ${summary.total} 只，未分类 ${summary.unclassi
 console.log(summary.stages.map(s => `${s.key} ${s.count}`).join(' | '));
 if (analysisEnabled) {
   console.log(`原因标签 ${analysisStats.reasonCount} 条，主营缓存 ${analysisStats.profileCache} 只（本次补 ${analysisStats.profileFetched} 只）`);
+}
+if (promotionStats.latestDate) {
+  const latest = promotionStats.latest;
+  const rate = latest?.rate == null ? '—' : `${(latest.rate * 100).toFixed(1)}%`;
+  console.log(`7日晋级率 ${rate}（${latest?.sample || 0} 只样本，${promotionStats.historyDays} 个交易日历史）`);
 }
 if (summary.unclassified) {
   const codes = stocks.filter(s => s.stage === '未分类').map(s => `${s.code} ${s.name}`);
