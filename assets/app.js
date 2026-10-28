@@ -1,4 +1,4 @@
-import { FEATURES } from './features.js';
+import { FEATURES } from './features.js?v=20261028b';
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -264,11 +264,15 @@ function renderStats() {
 
   const promotion = state.promotion?.days?.[d.date];
   const promotionRate = promotion?.rate;
-  els.promotion.textContent = promotionRate == null ? '—' : (promotionRate * 100).toFixed(1);
-  els.promotionUnit.hidden = promotionRate == null;
-  els.promotionFoot.textContent = promotionRate == null
-    ? (promotion ? '样本观察中（需≥2日）' : '暂无 7 日样本')
-    : `样本 ${fmtInt(promotion.sample)} 只 · 命中 ${fmtInt(promotion.hits)}/${fmtInt(promotion.observed)} 天`;
+  if (els.promotion) {
+    els.promotion.textContent = promotionRate == null ? '—' : (promotionRate * 100).toFixed(1);
+  }
+  if (els.promotionUnit) els.promotionUnit.hidden = promotionRate == null;
+  if (els.promotionFoot) {
+    els.promotionFoot.textContent = promotionRate == null
+      ? (promotion ? '样本观察中（需≥2日）' : '暂无 7 日样本')
+      : `样本 ${fmtInt(promotion.sample)} 只 · 命中 ${fmtInt(promotion.hits)}/${fmtInt(promotion.observed)} 天`;
+  }
 
   const strongest = stageMeta(d.strongestStage);
   const strongestStat = d.stages.find(s => s.key === d.strongestStage);
@@ -475,6 +479,7 @@ function renderStocks() {
 }
 
 function renderAnalysis() {
+  if (!els.analysisPanel || !els.analysisBody || !els.analysisSub || !els.analysisToggle) return;
   if (!FEATURES.analysisBeta || state.analysisForcedOff) {
     els.analysisPanel.hidden = true;
     return;
@@ -798,9 +803,9 @@ async function refresh() {
 function renderEmpty() {
   els.total.textContent = '0';
   els.delta.textContent = '暂无数据';
-  els.promotion.textContent = '—';
-  els.promotionUnit.hidden = true;
-  els.promotionFoot.textContent = '请先运行抓取脚本';
+  if (els.promotion) els.promotion.textContent = '—';
+  if (els.promotionUnit) els.promotionUnit.hidden = true;
+  if (els.promotionFoot) els.promotionFoot.textContent = '请先运行抓取脚本';
   els.strongest.textContent = '—';
   els.strongestFoot.textContent = '暂无数据';
   els.center.textContent = '—';
@@ -814,8 +819,8 @@ function renderEmpty() {
   els.tableEmpty.hidden = false;
   els.trend.innerHTML = '<text class="trend-empty" x="500" y="150">暂无历史数据</text>';
   els.trendLegend.innerHTML = '';
-  els.analysisPanel.hidden = true;
-  els.analysisBody.innerHTML = '';
+  if (els.analysisPanel) els.analysisPanel.hidden = true;
+  if (els.analysisBody) els.analysisBody.innerHTML = '';
 }
 
 async function boot() {
