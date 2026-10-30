@@ -160,7 +160,7 @@ function loadPromotion() {
 async function buildPromotion(todayStocks) {
   const history = [];
   let cursor = dateCompact;
-  for (let guard = 0; guard < 30 && history.length < 8; guard += 1) {
+  for (let guard = 0; guard < 30 && history.length < 9; guard += 1) {
     const day = compactToDate(cursor);
     const weekday = day.getUTCDay();
     if (weekday !== 0 && weekday !== 6) {
@@ -178,7 +178,12 @@ async function buildPromotion(todayStocks) {
   }, null, 2), 'utf8');
 
   const promotion = loadPromotion();
-  for (const day of history.slice(-2)) {
+  for (const [date, value] of Object.entries(promotion.days)) {
+    if (!value || typeof value.prevCount !== 'number' || !('rate' in value) || !('avg7' in value)) {
+      delete promotion.days[date];
+    }
+  }
+  for (const day of history.slice(1)) {
     const value = computePromotion(history, day.date);
     if (value) promotion.days[day.date] = value;
   }
@@ -349,7 +354,8 @@ if (analysisEnabled) {
 if (promotionStats.latestDate) {
   const latest = promotionStats.latest;
   const rate = latest?.rate == null ? '—' : `${(latest.rate * 100).toFixed(1)}%`;
-  console.log(`7日晋级率 ${rate}（${latest?.sample || 0} 只样本，${promotionStats.historyDays} 个交易日历史）`);
+  const avg = latest?.avg7 == null ? '—' : `${(latest.avg7 * 100).toFixed(1)}%`;
+  console.log(`晋级率 ${rate}（${latest?.continueCount || 0}/${latest?.prevCount || 0}），近${latest?.avg7Days || 0}日均值 ${avg}`);
 }
 if (summary.unclassified) {
   const codes = stocks.filter(s => s.stage === '未分类').map(s => `${s.code} ${s.name}`);

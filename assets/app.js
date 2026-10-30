@@ -269,9 +269,14 @@ function renderStats() {
   }
   if (els.promotionUnit) els.promotionUnit.hidden = promotionRate == null;
   if (els.promotionFoot) {
-    els.promotionFoot.textContent = promotionRate == null
-      ? (promotion ? '样本观察中（需≥2日）' : '暂无 7 日样本')
-      : `样本 ${fmtInt(promotion.sample)} 只 · 命中 ${fmtInt(promotion.hits)}/${fmtInt(promotion.observed)} 天`;
+    if (!promotion) {
+      els.promotionFoot.textContent = '暂无晋级率样本';
+    } else if (promotionRate == null) {
+      els.promotionFoot.textContent = '昨日无涨停样本';
+    } else {
+      const avg = promotion.avg7 == null ? '—' : `${(promotion.avg7 * 100).toFixed(1)}%`;
+      els.promotionFoot.textContent = `昨日 ${fmtInt(promotion.prevCount)} 只 → 今日连板 ${fmtInt(promotion.continueCount)} 只 · 近${promotion.avg7Days || 0}日均值 ${avg}`;
+    }
   }
 
   const strongest = stageMeta(d.strongestStage);
@@ -529,12 +534,6 @@ function renderAnalysis() {
       ? tags.map(tag => `<span class="reason-chip">${escapeHtml(tag)}</span>`).join('')
       : '<span class="reason-chip empty">暂无原因标签</span>';
     const business = s.mainBusiness || '';
-    const promotional = state.promotion?.days?.[d.date]?.stocks?.[s.code];
-    const promoHtml = promotional
-      ? promotional.observed >= 2
-        ? `<span class="promo-chip" title="7日窗口：命中 ${promotional.hits} / 观察 ${promotional.observed} 天">7日晋级 ${(promotional.rate * 100).toFixed(0)}%</span>`
-        : '<span class="promo-chip muted">首次涨停 · 观察中</span>'
-      : '';
     const summary = [
       `属${s.stage}环节`,
       s.lianban >= 2 ? `${s.lianban}连板` : '首板',
@@ -553,7 +552,6 @@ function renderAnalysis() {
         <span>首封 ${escapeHtml(s.firstSeal || '—')}</span>
         <span>封单 ${fmtMoney(s.sealFund)}</span>
         ${s.daysBoard ? `<span>${escapeHtml(s.daysBoard)}</span>` : ''}
-        ${promoHtml}
       </div>
       <div class="analysis-reason">
         <span class="analysis-label">原因</span>${reasonHtml}

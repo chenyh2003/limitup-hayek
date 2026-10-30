@@ -110,50 +110,42 @@ test('主营缓存新鲜度', () => {
   assert.equal(isProfileFresh({ mainBusiness: '', updatedAt: '2026-05-01T00:00:00Z' }, now), false);
 });
 
-test('7日晋级率：涨停涨停未涨停涨停 = 75%', () => {
+test('晋级率：昨日涨停股今日继续涨停的比例', () => {
   const history = [
-    { date: '2026-10-19', codes: ['600838'] },
-    { date: '2026-10-20', codes: ['600838'] },
-    { date: '2026-10-21', codes: [] },
-    { date: '2026-10-22', codes: ['600838'] }
+    { date: '2026-10-19', codes: ['A', 'B'] },
+    { date: '2026-10-20', codes: ['A', 'C'] },
+    { date: '2026-10-21', codes: ['A'] },
+    { date: '2026-10-22', codes: ['A', 'D'] }
   ];
   const result = computePromotion(history, '2026-10-22');
-  assert.equal(result.window, 4);
-  assert.equal(result.stocks['600838'].first, '2026-10-19');
-  assert.equal(result.stocks['600838'].hits, 3);
-  assert.equal(result.stocks['600838'].observed, 4);
-  assert.equal(result.stocks['600838'].rate, 0.75);
-  assert.equal(result.sample, 1);
-  assert.equal(result.rate, 0.75);
-  assert.equal(result.hits, 3);
-  assert.equal(result.observed, 4);
+  assert.equal(result.prevDate, '2026-10-21');
+  assert.equal(result.prevCount, 1);
+  assert.equal(result.continueCount, 1);
+  assert.equal(result.rate, 1);
+  assert.equal(result.avg7Days, 3);
+  assert.equal(result.avg7, 0.6667);
 });
 
-test('7日晋级率：首次观察当日不计入平均样本', () => {
+test('晋级率：昨日涨停数为 0 时无样本', () => {
   const history = [
     { date: '2026-10-21', codes: [] },
     { date: '2026-10-22', codes: ['000001'] }
   ];
   const result = computePromotion(history, '2026-10-22');
-  assert.equal(result.stocks['000001'].observed, 1);
-  assert.equal(result.sample, 0);
+  assert.equal(result.prevCount, 0);
   assert.equal(result.rate, null);
+  assert.equal(result.avg7, null);
 });
 
-test('7日晋级率：卡片合计命中率与个股平均晋级率分开', () => {
-  const history = [
-    { date: '2026-10-19', codes: ['A'] },
-    { date: '2026-10-20', codes: ['A', 'B'] },
-    { date: '2026-10-21', codes: ['A'] }
-  ];
-  const result = computePromotion(history, '2026-10-21');
-  assert.equal(result.stocks.A.rate, 1);
-  assert.equal(result.stocks.B.rate, 0.5);
-  assert.equal(result.sample, 2);
-  assert.equal(result.hits, 4);
-  assert.equal(result.observed, 5);
-  assert.equal(result.rate, 0.8);
-  assert.equal(result.averageRate, 0.75);
+test('晋级率：近7日滚动均值最多取7天', () => {
+  const history = Array.from({ length: 9 }, (_, i) => ({
+    date: `2026-10-${String(10 + i).padStart(2, '0')}`,
+    codes: i === 0 ? ['A'] : ['A']
+  }));
+  const result = computePromotion(history, '2026-10-18');
+  assert.equal(result.avg7Days, 7);
+  assert.equal(result.rate, 1);
+  assert.equal(result.avg7, 1);
 });
 
 test('索引去重、排序并保留最新日期', () => {

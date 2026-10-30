@@ -129,49 +129,49 @@ export function isProfileFresh(entry, now = Date.now(), maxAgeDays = 90) {
 
 export function computePromotion(history, targetDate, windowSize = 7) {
   const targetIndex = history.findIndex(day => day.date === targetDate);
-  if (targetIndex < 0) return null;
-  const window = history.slice(Math.max(0, targetIndex - windowSize + 1), targetIndex + 1);
-  const map = new Map();
+  if (targetIndex < 1) return null;
 
-  window.forEach((day, index) => {
-    for (const code of day.codes || []) {
-      if (!map.has(code)) {
-        map.set(code, { first: day.date, firstIndex: index, hits: 0 });
-      }
-      map.get(code).hits += 1;
-    }
-  });
+  const previous = history[targetIndex - 1];
+  const today = history[targetIndex];
+  const previousCodes = previous.codes || [];
+  const todayCodes = today.codes || [];
+  const previousCount = previousCodes.length;
 
-  const stocks = {};
-  let sumRate = 0;
-  let sample = 0;
-  let hitsTotal = 0;
-  let observedTotal = 0;
-
-  for (const [code, item] of map) {
-    const observed = window.length - item.firstIndex;
-    const rate = item.hits / observed;
-    stocks[code] = {
-      first: item.first,
-      hits: item.hits,
-      observed,
-      rate: Number(rate.toFixed(4))
+  if (!previousCount) {
+    return {
+      prevDate: previous.date,
+      prevCount: 0,
+      continueCount: 0,
+      rate: null,
+      avg7: null,
+      avg7Days: 0
     };
-    if (observed >= 2) {
-      sumRate += rate;
-      sample += 1;
-      hitsTotal += item.hits;
-      observedTotal += observed;
-    }
   }
 
+  const previousSet = new Set(previousCodes);
+  const continueCount = todayCodes.filter(code => previousSet.has(code)).length;
+  const rate = continueCount / previousCount;
+
+  const rates = [];
+  const start = Math.max(1, targetIndex - windowSize + 1);
+  for (let index = start; index <= targetIndex; index += 1) {
+    const prev = history[index - 1];
+    const curr = history[index];
+    const prevCodes = prev.codes || [];
+    if (!prevCodes.length) continue;
+    const set = new Set(prevCodes);
+    const continued = (curr.codes || []).filter(code => set.has(code)).length;
+    rates.push(continued / prevCodes.length);
+  }
+
+  const average = rates.length ? rates.reduce((sum, value) => sum + value, 0) / rates.length : null;
+
   return {
-    window: window.length,
-    sample,
-    rate: observedTotal ? Number((hitsTotal / observedTotal).toFixed(4)) : null,
-    averageRate: sample ? Number((sumRate / sample).toFixed(4)) : null,
-    hits: hitsTotal,
-    observed: observedTotal,
-    stocks
+    prevDate: previous.date,
+    prevCount: previousCount,
+    continueCount,
+    rate: Number(rate.toFixed(4)),
+    avg7: average == null ? null : Number(average.toFixed(4)),
+    avg7Days: rates.length
   };
 }

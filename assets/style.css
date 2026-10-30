@@ -822,24 +822,6 @@ tbody tr:hover { background: #fbf7f0; }
 
 .analysis-meta .stage-chip { font-size: 10px; }
 
-.promo-chip {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 6px;
-  color: #2f5f47;
-  background: #e7f0ea;
-  border-radius: 999px;
-  font-size: 9px;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
-
-.promo-chip.muted {
-  color: var(--muted);
-  background: #f0e9de;
-  font-weight: 500;
-}
-
 .analysis-reason {
   display: flex;
   flex-wrap: wrap;
