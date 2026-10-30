@@ -1,4 +1,4 @@
-import { FEATURES } from './features.js?v=20261028b';
+﻿import { FEATURES } from './features.js?v=20261029';
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -100,19 +100,19 @@ function fmtSigned(value) {
 
 function fmtMoney(value) {
   const n = Number(value || 0);
-  if (!n) return '—';
-  if (n >= 1e8) return `${(n / 1e8).toFixed(2)}亿`;
-  if (n >= 1e4) return `${(n / 1e4).toFixed(0)}万`;
+  if (!n) return '鈥?;
+  if (n >= 1e8) return `${(n / 1e8).toFixed(2)}浜縛;
+  if (n >= 1e4) return `${(n / 1e4).toFixed(0)}涓嘸;
   return `${Math.round(n)}`;
 }
 
 function fmtDate(date) {
   const [, m, d] = String(date).split('-');
-  return `${m}月${d}日`;
+  return `${m}鏈?{d}鏃;
 }
 
 function fmtStamp(iso) {
-  if (!iso) return '—';
+  if (!iso) return '鈥?;
   const parts = new Intl.DateTimeFormat('zh-CN', {
     timeZone: 'Asia/Shanghai',
     month: '2-digit',
@@ -134,13 +134,13 @@ function stageColor(key) {
 }
 
 function shortGroup(group) {
-  return String(group || '').replace('资本品', '').replace('生产与流通', '');
+  return String(group || '').replace('璧勬湰鍝?, '').replace('鐢熶骇涓庢祦閫?, '');
 }
 
 function analysisTags(reason) {
   return [...new Set(
     String(reason || '')
-      .split(/[+＋、,，;；]/)
+      .split(/[+锛嬨€?锛?锛沒/)
       .map(part => part.trim())
       .filter(Boolean)
   )].slice(0, 4);
@@ -149,8 +149,8 @@ function analysisTags(reason) {
 function filteredStocks() {
   const q = state.query.trim().toLowerCase();
   return state.day.stocks.filter(s => {
-    if (state.selectedStage === '未分类') {
-      if (s.stage !== '未分类') return false;
+    if (state.selectedStage === '鏈垎绫?) {
+      if (s.stage !== '鏈垎绫?) return false;
     } else if (state.selectedStage && s.stage !== state.selectedStage) {
       return false;
     }
@@ -167,7 +167,7 @@ function previousDay(date) {
 
 async function loadJson(path) {
   const res = await fetch(`${path}?v=${Date.now()}`, { cache: 'no-store' });
-  if (!res.ok) throw new Error(`无法加载 ${path}（${res.status}）`);
+  if (!res.ok) throw new Error(`鏃犳硶鍔犺浇 ${path}锛?{res.status}锛塦);
   return res.json();
 }
 
@@ -197,13 +197,13 @@ function positionTooltip(el, html, clientX, clientY, container) {
 function populateDates() {
   const days = [...(state.index?.days || [])].reverse();
   if (!days.length) {
-    els.dateSelect.innerHTML = '<option>暂无数据</option>';
+    els.dateSelect.innerHTML = '<option>鏆傛棤鏁版嵁</option>';
     els.dateSelect.disabled = true;
     return;
   }
   els.dateSelect.disabled = false;
   els.dateSelect.innerHTML = days
-    .map(d => `<option value="${d.date}">${d.date} · ${fmtInt(d.total)}只</option>`)
+    .map(d => `<option value="${d.date}">${d.date} 路 ${fmtInt(d.total)}鍙?/option>`)
     .join('');
   if (state.day) els.dateSelect.value = state.day.date;
 }
@@ -225,7 +225,7 @@ async function selectDate(date, { updateHash = true } = {}) {
     hideError();
   } catch (err) {
     if (state.day) els.dateSelect.value = state.day.date;
-    showError(`加载 ${date} 失败：${err.message}`);
+    showError(`鍔犺浇 ${date} 澶辫触锛?{err.message}`);
   }
 }
 
@@ -241,11 +241,11 @@ function renderAll() {
   renderAnalysis();
   renderTrend();
 
-  els.updated.textContent = `采集于 ${fmtStamp(state.day.capturedAt)} · 共 ${state.index.days.length} 个交易日`;
+  els.updated.textContent = `閲囬泦浜?${fmtStamp(state.day.capturedAt)} 路 鍏?${state.index.days.length} 涓氦鏄撴棩`;
   els.universe.textContent = state.day.universe || state.meta.universe;
   els.unclassifiedNote.textContent = state.day.unclassified
-    ? `另有 ${state.day.unclassified} 只未分类，未计入三角`
-    : '7 个环节全部有分类';
+    ? `鍙︽湁 ${state.day.unclassified} 鍙湭鍒嗙被锛屾湭璁″叆涓夎`
+    : '7 涓幆鑺傚叏閮ㄦ湁鍒嗙被';
 }
 
 function renderStats() {
@@ -254,43 +254,43 @@ function renderStats() {
 
   els.total.textContent = fmtInt(d.total);
   if (!prev) {
-    els.delta.textContent = '从今天开始记录';
+    els.delta.textContent = '浠庝粖澶╁紑濮嬭褰?;
   } else {
     const diff = d.total - prev.total;
     els.delta.innerHTML = diff === 0
-      ? `较 ${fmtDate(prev.date)} 持平`
-      : `较 ${fmtDate(prev.date)} <span class="${diff > 0 ? 'up' : 'down'}">${fmtSigned(diff)}</span> 只`;
+      ? `杈?${fmtDate(prev.date)} 鎸佸钩`
+      : `杈?${fmtDate(prev.date)} <span class="${diff > 0 ? 'up' : 'down'}">${fmtSigned(diff)}</span> 鍙猔;
   }
 
   const promotion = state.promotion?.days?.[d.date];
   const promotionRate = promotion?.rate;
   if (els.promotion) {
-    els.promotion.textContent = promotionRate == null ? '—' : (promotionRate * 100).toFixed(1);
+    els.promotion.textContent = promotionRate == null ? '鈥? : (promotionRate * 100).toFixed(1);
   }
   if (els.promotionUnit) els.promotionUnit.hidden = promotionRate == null;
   if (els.promotionFoot) {
     if (!promotion) {
-      els.promotionFoot.textContent = '暂无晋级率样本';
+      els.promotionFoot.textContent = '鏆傛棤鏅嬬骇鐜囨牱鏈?;
     } else if (promotionRate == null) {
-      els.promotionFoot.textContent = '昨日无涨停样本';
+      els.promotionFoot.textContent = '鏄ㄦ棩鏃犳定鍋滄牱鏈?;
     } else {
-      const avg = promotion.avg7 == null ? '—' : `${(promotion.avg7 * 100).toFixed(1)}%`;
-      els.promotionFoot.textContent = `昨日 ${fmtInt(promotion.prevCount)} 只 → 今日连板 ${fmtInt(promotion.continueCount)} 只 · 近${promotion.avg7Days || 0}日均值 ${avg}`;
+      const avg = promotion.avg7 == null ? '鈥? : `${(promotion.avg7 * 100).toFixed(1)}%`;
+      els.promotionFoot.textContent = `鏄ㄦ棩 ${fmtInt(promotion.prevCount)} 鍙?鈫?浠婃棩杩炴澘 ${fmtInt(promotion.continueCount)} 鍙?路 杩?{promotion.avg7Days || 0}鏃ュ潎鍊?${avg}`;
     }
   }
 
   const strongest = stageMeta(d.strongestStage);
   const strongestStat = d.stages.find(s => s.key === d.strongestStage);
-  els.strongest.textContent = strongest ? d.strongestStage : '—';
+  els.strongest.textContent = strongest ? d.strongestStage : '鈥?;
   els.strongest.style.color = strongest ? strongest.color : '';
   els.strongestFoot.textContent = strongestStat && d.total
-    ? `${fmtInt(strongestStat.count)} 只 · ${fmtPct(strongestStat.share)}`
-    : d.total ? '暂无可分类涨停' : '今日无涨停';
+    ? `${fmtInt(strongestStat.count)} 鍙?路 ${fmtPct(strongestStat.share)}`
+    : d.total ? '鏆傛棤鍙垎绫绘定鍋? : '浠婃棩鏃犳定鍋?;
 
-  els.center.textContent = d.center == null ? '—' : d.center.toFixed(2);
+  els.center.textContent = d.center == null ? '鈥? : d.center.toFixed(2);
   els.centerLabel.textContent = d.center == null
-    ? '暂无可计算样本'
-    : `${d.centerLabel} · 1 上游 / 7 下游`;
+    ? '鏆傛棤鍙绠楁牱鏈?
+    : `${d.centerLabel} 路 1 涓婃父 / 7 涓嬫父`;
   const pos = d.center == null ? 50 : Math.min(98, Math.max(2, ((d.center - 1) / 6) * 100));
   els.centerMarker.style.left = `${pos}%`;
 }
@@ -340,16 +340,16 @@ function renderTriangle() {
     const prev = previousDay(d.date);
     const prevCount = prev?.stages?.[s.key];
     const delta = prev && prevCount != null ? count - prevCount : null;
-    const deltaText = delta == null ? '' : `较上一交易日 ${fmtSigned(delta)} 只`;
-    const label = `${s.key}：${count} 只，占比 ${fmtPct(share)}`;
+    const deltaText = delta == null ? '' : `杈冧笂涓€浜ゆ槗鏃?${fmtSigned(delta)} 鍙猔;
+    const label = `${s.key}锛?{count} 鍙紝鍗犳瘮 ${fmtPct(share)}`;
     return `<g class="tri-row" data-stage="${s.key}" tabindex="0" role="button" aria-pressed="false" aria-label="${label}">
       <rect class="tri-hit" x="0" y="${y - 4}" width="${W}" height="${rowH + 8}" fill="transparent"></rect>
       <text class="tri-stage-label" x="152" y="${y + rowH / 2 - 2}" text-anchor="end">${s.key}</text>
       <text class="tri-stage-sub" x="152" y="${y + rowH / 2 + 13}" text-anchor="end">${s.note || s.group}</text>
       <rect class="tri-bar" x="${x.toFixed(1)}" y="${y}" width="${width.toFixed(1)}" height="${rowH}" rx="10" fill="${s.color}" opacity="${opacity.toFixed(2)}"></rect>
-      <text class="tri-count" x="612" y="${y + rowH / 2 + 2}" text-anchor="start">${count}<tspan class="tri-unit" dx="2">只</tspan></text>
+      <text class="tri-count" x="612" y="${y + rowH / 2 + 2}" text-anchor="start">${count}<tspan class="tri-unit" dx="2">鍙?/tspan></text>
       <text class="tri-share" x="612" y="${y + rowH / 2 + 17}" text-anchor="start">${fmtPct(share)}</text>
-      <title>${label}${deltaText ? `，${deltaText}` : ''}</title>
+      <title>${label}${deltaText ? `锛?{deltaText}` : ''}</title>
     </g>`;
   }).join('');
 
@@ -387,11 +387,11 @@ function renderBoards() {
   const b = state.day.boards;
   const total = b.first + b.second + b.thirdPlus;
   const items = [
-    { key: 'first', label: '首板', count: b.first, color: '#CFC2AE' },
-    { key: 'second', label: '2板', count: b.second, color: '#D98A5F' },
-    { key: 'thirdPlus', label: '3板+', count: b.thirdPlus, color: '#B23A2B' }
+    { key: 'first', label: '棣栨澘', count: b.first, color: '#CFC2AE' },
+    { key: 'second', label: '2鏉?, count: b.second, color: '#D98A5F' },
+    { key: 'thirdPlus', label: '3鏉?', count: b.thirdPlus, color: '#B23A2B' }
   ];
-  els.maxBoard.textContent = `最高 ${b.max} 板`;
+  els.maxBoard.textContent = `鏈€楂?${b.max} 鏉縛;
   els.boards.innerHTML = `
     <div class="board-bar">
       ${items.map(item => `<span style="width:${total ? (item.count / total) * 100 : 0}%;background:${item.color}"></span>`).join('')}
@@ -416,9 +416,9 @@ function renderStageRanking() {
     const prevCount = prev?.stages?.[s.key];
     const delta = prev && prevCount != null ? stat.count - prevCount : null;
     const deltaClass = delta > 0 ? 'up' : delta < 0 ? 'down' : '';
-    const deltaText = delta == null ? '' : delta === 0 ? '持平' : fmtSigned(delta);
+    const deltaText = delta == null ? '' : delta === 0 ? '鎸佸钩' : fmtSigned(delta);
     const selected = state.selectedStage === s.key;
-    return `<button class="rank-row ${selected ? 'selected' : ''}" type="button" data-stage="${s.key}" aria-pressed="${selected}" title="${s.note ? `${s.key}：${s.note}` : s.key}">
+    return `<button class="rank-row ${selected ? 'selected' : ''}" type="button" data-stage="${s.key}" aria-pressed="${selected}" title="${s.note ? `${s.key}锛?{s.note}` : s.key}">
       <span class="rank-dot" style="background:${s.color}"></span>
       <span class="rank-main">
         <span class="rank-name">${s.key}${deltaText ? `<span class="delta ${deltaClass}">${deltaText}</span>` : ''}</span>
@@ -432,16 +432,16 @@ function renderStageRanking() {
 function renderStageFilter() {
   const d = state.day;
   const selected = state.selectedStage;
-  const all = `<button class="chip ${!selected ? 'active' : ''}" type="button" data-stage="" aria-pressed="${!selected}">全部 <span class="chip-count">${fmtInt(d.total)}</span></button>`;
+  const all = `<button class="chip ${!selected ? 'active' : ''}" type="button" data-stage="" aria-pressed="${!selected}">鍏ㄩ儴 <span class="chip-count">${fmtInt(d.total)}</span></button>`;
   const stages = state.meta.stages.map(s => {
     const count = d.stages.find(x => x.key === s.key)?.count || 0;
-    return `<button class="chip ${selected === s.key ? 'active' : ''}" type="button" data-stage="${s.key}" aria-pressed="${selected === s.key}" title="${s.note ? `${s.key}：${s.note}` : s.key}">
+    return `<button class="chip ${selected === s.key ? 'active' : ''}" type="button" data-stage="${s.key}" aria-pressed="${selected === s.key}" title="${s.note ? `${s.key}锛?{s.note}` : s.key}">
       <i style="background:${s.color}"></i>${s.key} <span class="chip-count">${fmtInt(count)}</span>
     </button>`;
   }).join('');
   const unclassified = d.unclassified
-    ? `<button class="chip ${selected === '未分类' ? 'active' : ''}" type="button" data-stage="未分类" aria-pressed="${selected === '未分类'}">
-        <i style="background:#9A9082"></i>未分类 <span class="chip-count">${fmtInt(d.unclassified)}</span>
+    ? `<button class="chip ${selected === '鏈垎绫? ? 'active' : ''}" type="button" data-stage="鏈垎绫? aria-pressed="${selected === '鏈垎绫?}">
+        <i style="background:#9A9082"></i>鏈垎绫?<span class="chip-count">${fmtInt(d.unclassified)}</span>
       </button>`
     : '';
   els.stageFilter.innerHTML = all + stages + unclassified;
@@ -458,11 +458,11 @@ function renderStocks() {
   };
   rows = rows.slice().sort(sorters[state.sort] || sorters.lianban);
 
-  const scope = state.selectedStage === '未分类'
-    ? '未分类'
-    : state.selectedStage || '全市场';
-  const searchText = state.query.trim() ? ` · 搜索“${state.query.trim()}”` : '';
-  els.tableSub.textContent = `${scope} · 显示 ${fmtInt(rows.length)} / ${fmtInt(d.total)} 只${searchText}`;
+  const scope = state.selectedStage === '鏈垎绫?
+    ? '鏈垎绫?
+    : state.selectedStage || '鍏ㄥ競鍦?;
+  const searchText = state.query.trim() ? ` 路 鎼滅储鈥?{state.query.trim()}鈥漙 : '';
+  els.tableSub.textContent = `${scope} 路 鏄剧ず ${fmtInt(rows.length)} / ${fmtInt(d.total)} 鍙?{searchText}`;
 
   els.stockBody.innerHTML = rows.map(s => {
     const color = stageColor(s.stage);
@@ -475,8 +475,8 @@ function renderStocks() {
       <td><span class="board-badge ${badgeClass}">${escapeHtml(s.boardLabel)}</span></td>
       <td class="change-up">${change > 0 ? '+' : ''}${change.toFixed(2)}%</td>
       <td class="num">${fmtMoney(s.sealFund)}</td>
-      <td class="muted-cell">${escapeHtml(s.firstSeal || '—')}</td>
-      <td class="muted-cell">${escapeHtml(s.industry || '—')}</td>
+      <td class="muted-cell">${escapeHtml(s.firstSeal || '鈥?)}</td>
+      <td class="muted-cell">${escapeHtml(s.industry || '鈥?)}</td>
     </tr>`;
   }).join('');
 
@@ -491,13 +491,13 @@ function renderAnalysis() {
   }
 
   els.analysisPanel.hidden = false;
-  els.analysisToggle.textContent = state.analysisVisible ? '隐藏' : '开启';
+  els.analysisToggle.textContent = state.analysisVisible ? '闅愯棌' : '寮€鍚?;
   els.analysisToggle.setAttribute('aria-pressed', String(state.analysisVisible));
   els.analysisBody.hidden = !state.analysisVisible;
   els.analysisEmpty.hidden = true;
 
   if (!state.analysisVisible) {
-    els.analysisSub.textContent = '测试功能已隐藏 · 点击右侧按钮开启';
+    els.analysisSub.textContent = '娴嬭瘯鍔熻兘宸查殣钘?路 鐐瑰嚮鍙充晶鎸夐挳寮€鍚?;
     els.analysisBody.innerHTML = '';
     return;
   }
@@ -506,23 +506,23 @@ function renderAnalysis() {
   const rows = filteredStocks()
     .slice()
     .sort((a, b) => b.lianban - a.lianban || b.sealFund - a.sealFund);
-  const scope = state.selectedStage === '未分类'
-    ? '未分类'
-    : state.selectedStage || '全部';
-  const searchText = state.query.trim() ? ` · 搜索“${state.query.trim()}”` : '';
-  els.analysisSub.textContent = `${scope} · ${rows.length} 只 · 按连板排序${searchText}`;
+  const scope = state.selectedStage === '鏈垎绫?
+    ? '鏈垎绫?
+    : state.selectedStage || '鍏ㄩ儴';
+  const searchText = state.query.trim() ? ` 路 鎼滅储鈥?{state.query.trim()}鈥漙 : '';
+  els.analysisSub.textContent = `${scope} 路 ${rows.length} 鍙?路 鎸夎繛鏉挎帓搴?{searchText}`;
 
   if (!rows.length) {
     els.analysisBody.innerHTML = '';
     els.analysisEmpty.hidden = false;
-    els.analysisEmpty.textContent = '当前筛选下没有涨停股';
+    els.analysisEmpty.textContent = '褰撳墠绛涢€変笅娌℃湁娑ㄥ仠鑲?;
     return;
   }
 
   if (!rows.some(s => s.reason || s.mainBusiness)) {
     els.analysisBody.innerHTML = '';
     els.analysisEmpty.hidden = false;
-    els.analysisEmpty.textContent = '当日原因/主营数据暂缺，主看板不受影响';
+    els.analysisEmpty.textContent = '褰撴棩鍘熷洜/涓昏惀鏁版嵁鏆傜己锛屼富鐪嬫澘涓嶅彈褰卞搷';
     return;
   }
 
@@ -532,12 +532,12 @@ function renderAnalysis() {
     const color = stageColor(s.stage);
     const reasonHtml = tags.length
       ? tags.map(tag => `<span class="reason-chip">${escapeHtml(tag)}</span>`).join('')
-      : '<span class="reason-chip empty">暂无原因标签</span>';
+      : '<span class="reason-chip empty">鏆傛棤鍘熷洜鏍囩</span>';
     const business = s.mainBusiness || '';
     const summary = [
-      `属${s.stage}环节`,
-      s.lianban >= 2 ? `${s.lianban}连板` : '首板',
-      tags.length ? `原因标签集中在${tags.slice(0, 3).join('、')}` : '暂无明确原因标签'
+      `灞?{s.stage}鐜妭`,
+      s.lianban >= 2 ? `${s.lianban}杩炴澘` : '棣栨澘',
+      tags.length ? `鍘熷洜鏍囩闆嗕腑鍦?{tags.slice(0, 3).join('銆?)}` : '鏆傛棤鏄庣‘鍘熷洜鏍囩'
     ];
     return `<article class="analysis-card" data-stage="${escapeHtml(s.stage)}">
       <div class="analysis-card-head">
@@ -549,18 +549,18 @@ function renderAnalysis() {
       </div>
       <div class="analysis-meta">
         <span class="stage-chip"><i style="background:${color}"></i>${escapeHtml(s.stage)}</span>
-        <span>首封 ${escapeHtml(s.firstSeal || '—')}</span>
-        <span>封单 ${fmtMoney(s.sealFund)}</span>
+        <span>棣栧皝 ${escapeHtml(s.firstSeal || '鈥?)}</span>
+        <span>灏佸崟 ${fmtMoney(s.sealFund)}</span>
         ${s.daysBoard ? `<span>${escapeHtml(s.daysBoard)}</span>` : ''}
       </div>
       <div class="analysis-reason">
-        <span class="analysis-label">原因</span>${reasonHtml}
+        <span class="analysis-label">鍘熷洜</span>${reasonHtml}
       </div>
       <div class="analysis-business">
-        <span class="analysis-label">主营</span>
-        <p title="${escapeHtml(business)}">${escapeHtml(business || '暂无主营数据')}</p>
+        <span class="analysis-label">涓昏惀</span>
+        <p title="${escapeHtml(business)}">${escapeHtml(business || '鏆傛棤涓昏惀鏁版嵁')}</p>
       </div>
-      <p class="analysis-summary">简析：${summary.join('；')}。</p>
+      <p class="analysis-summary">绠€鏋愶細${summary.join('锛?)}銆?/p>
     </article>`;
   }).join('');
 }
@@ -573,15 +573,15 @@ function renderTrend() {
     .join('');
 
   if (!days.length) {
-    els.trend.innerHTML = '<text class="trend-empty" x="500" y="150">暂无历史数据</text>';
-    els.trendSub.textContent = '历史从今天开始积累';
+    els.trend.innerHTML = '<text class="trend-empty" x="500" y="150">鏆傛棤鍘嗗彶鏁版嵁</text>';
+    els.trendSub.textContent = '鍘嗗彶浠庝粖澶╁紑濮嬬Н绱?;
     return;
   }
 
   const shown = days.slice(-30);
   els.trendSub.textContent = days.length <= 1
-    ? '历史从今天开始积累，明天起这里会出现变化'
-    : `最近 ${shown.length} 个有数据交易日`;
+    ? '鍘嗗彶浠庝粖澶╁紑濮嬬Н绱紝鏄庡ぉ璧疯繖閲屼細鍑虹幇鍙樺寲'
+    : `鏈€杩?${shown.length} 涓湁鏁版嵁浜ゆ槗鏃;
 
   const narrow = window.matchMedia('(max-width: 720px)').matches;
   const W = narrow ? 440 : 1000;
@@ -711,10 +711,10 @@ function bindEvents() {
     const delta = prev && prevCount != null ? stat.count - prevCount : null;
     const deltaHtml = delta == null
       ? ''
-      : `<div class="tip-muted">较上一交易日 ${delta === 0 ? '持平' : `${fmtSigned(delta)} 只`}</div>`;
+      : `<div class="tip-muted">杈冧笂涓€浜ゆ槗鏃?${delta === 0 ? '鎸佸钩' : `${fmtSigned(delta)} 鍙猔}</div>`;
     positionTooltip(
       els.tooltip,
-      `<strong>${stage}</strong> · ${fmtInt(stat.count)} 只 · ${fmtPct(stat.share)}${deltaHtml}`,
+      `<strong>${stage}</strong> 路 ${fmtInt(stat.count)} 鍙?路 ${fmtPct(stat.share)}${deltaHtml}`,
       event.clientX,
       event.clientY,
       els.triangleWrap
@@ -734,11 +734,11 @@ function bindEvents() {
     const lines = state.meta.stages
       .map(s => ({ s, count: day.stages?.[s.key] || 0 }))
       .filter(x => x.count)
-      .map(x => `<span style="color:${x.s.color}">●</span> ${x.s.key} ${x.count}`)
+      .map(x => `<span style="color:${x.s.color}">鈼?/span> ${x.s.key} ${x.count}`)
       .join('<br>');
     positionTooltip(
       els.trendTooltip,
-      `<strong>${day.date}</strong> · 共 ${fmtInt(day.total)} 只${lines ? `<br>${lines}` : ''}`,
+      `<strong>${day.date}</strong> 路 鍏?${fmtInt(day.total)} 鍙?{lines ? `<br>${lines}` : ''}`,
       event.clientX,
       event.clientY,
       els.trendWrap
@@ -792,7 +792,7 @@ async function refresh() {
     else renderEmpty();
     hideError();
   } catch (err) {
-    showError(`刷新失败：${err.message}`);
+    showError(`鍒锋柊澶辫触锛?{err.message}`);
   } finally {
     els.refresh.classList.remove('spinning');
   }
@@ -800,22 +800,22 @@ async function refresh() {
 
 function renderEmpty() {
   els.total.textContent = '0';
-  els.delta.textContent = '暂无数据';
-  if (els.promotion) els.promotion.textContent = '—';
+  els.delta.textContent = '鏆傛棤鏁版嵁';
+  if (els.promotion) els.promotion.textContent = '鈥?;
   if (els.promotionUnit) els.promotionUnit.hidden = true;
-  if (els.promotionFoot) els.promotionFoot.textContent = '请先运行抓取脚本';
-  els.strongest.textContent = '—';
-  els.strongestFoot.textContent = '暂无数据';
-  els.center.textContent = '—';
-  els.centerLabel.textContent = '暂无数据';
-  els.triangle.innerHTML = '<text class="tri-zero" x="380" y="280" text-anchor="middle">暂无数据</text>';
+  if (els.promotionFoot) els.promotionFoot.textContent = '璇峰厛杩愯鎶撳彇鑴氭湰';
+  els.strongest.textContent = '鈥?;
+  els.strongestFoot.textContent = '鏆傛棤鏁版嵁';
+  els.center.textContent = '鈥?;
+  els.centerLabel.textContent = '鏆傛棤鏁版嵁';
+  els.triangle.innerHTML = '<text class="tri-zero" x="380" y="280" text-anchor="middle">鏆傛棤鏁版嵁</text>';
   els.triangleMobile.innerHTML = '';
-  els.boards.innerHTML = '<div class="empty">暂无数据</div>';
-  els.ranking.innerHTML = '<div class="empty">暂无数据</div>';
+  els.boards.innerHTML = '<div class="empty">鏆傛棤鏁版嵁</div>';
+  els.ranking.innerHTML = '<div class="empty">鏆傛棤鏁版嵁</div>';
   els.stageFilter.innerHTML = '';
   els.stockBody.innerHTML = '';
   els.tableEmpty.hidden = false;
-  els.trend.innerHTML = '<text class="trend-empty" x="500" y="150">暂无历史数据</text>';
+  els.trend.innerHTML = '<text class="trend-empty" x="500" y="150">鏆傛棤鍘嗗彶鏁版嵁</text>';
   els.trendLegend.innerHTML = '';
   if (els.analysisPanel) els.analysisPanel.hidden = true;
   if (els.analysisBody) els.analysisBody.innerHTML = '';
@@ -844,9 +844,10 @@ async function boot() {
     await selectDate(date, { updateHash: false });
   } catch (err) {
     renderEmpty();
-    showError(`页面初始化失败：${err.message}`);
+    showError(`椤甸潰鍒濆鍖栧け璐ワ細${err.message}`);
   }
 }
 
 bindEvents();
 boot();
+

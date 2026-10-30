@@ -1,53 +1,53 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="每日 A 股涨停股票，按哈耶克三角 7 个生产环节做分布统计。">
+  <meta name="description" content="姣忔棩 A 鑲℃定鍋滆偂绁紝鎸夊搱鑰跺厠涓夎 7 涓敓浜х幆鑺傚仛鍒嗗竷缁熻銆?>
   <meta name="theme-color" content="#f6f3ec">
-  <title>涨停 · 哈耶克三角</title>
+  <title>娑ㄥ仠 路 鍝堣€跺厠涓夎</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="assets/style.css?v=20261028b">
+  <link rel="stylesheet" href="assets/style.css?v=20261029">
 </head>
 <body>
   <div class="page">
     <header class="masthead">
       <div class="brand">
         <div class="eyebrow">A-SHARE LIMIT-UP STRUCTURE</div>
-        <h1>涨停 · 哈耶克三角</h1>
-        <p class="subtitle">每日 A 股涨停结构分布</p>
+        <h1>娑ㄥ仠 路 鍝堣€跺厠涓夎</h1>
+        <p class="subtitle">姣忔棩 A 鑲℃定鍋滅粨鏋勫垎甯?/p>
       </div>
       <div class="controls">
         <label class="date-picker">
-          <span>交易日</span>
-          <select id="date-select" aria-label="选择交易日"></select>
+          <span>浜ゆ槗鏃?/span>
+          <select id="date-select" aria-label="閫夋嫨浜ゆ槗鏃?></select>
         </label>
-        <div class="updated" id="updated" aria-live="polite">数据加载中…</div>
-        <button id="refresh" class="icon-button" type="button" title="刷新数据" aria-label="刷新数据">↻</button>
+        <div class="updated" id="updated" aria-live="polite">鏁版嵁鍔犺浇涓€?/div>
+        <button id="refresh" class="icon-button" type="button" title="鍒锋柊鏁版嵁" aria-label="鍒锋柊鏁版嵁">鈫?/button>
       </div>
     </header>
 
     <main>
-      <section class="stat-grid" aria-label="当日概览">
+      <section class="stat-grid" aria-label="褰撴棩姒傝">
         <article class="stat-card stat-primary">
-          <div class="stat-label">今日涨停</div>
-          <div class="stat-value"><span id="stat-total">—</span><span class="unit">只</span></div>
-          <div class="stat-foot" id="stat-delta">—</div>
+          <div class="stat-label">浠婃棩娑ㄥ仠</div>
+          <div class="stat-value"><span id="stat-total">鈥?/span><span class="unit">鍙?/span></div>
+          <div class="stat-foot" id="stat-delta">鈥?/div>
         </article>
         <article class="stat-card">
-          <div class="stat-label" title="晋级率 = 昨日涨停股中今日继续涨停的家数 / 昨日涨停家数">晋级率</div>
-          <div class="stat-value"><span id="stat-promotion">—</span><span class="unit" id="stat-promotion-unit">%</span></div>
-          <div class="stat-foot" id="stat-promotion-foot">昨日涨停 → 今日连板</div>
+          <div class="stat-label" title="鏅嬬骇鐜?= 鏄ㄦ棩娑ㄥ仠鑲′腑浠婃棩缁х画娑ㄥ仠鐨勫鏁?/ 鏄ㄦ棩娑ㄥ仠瀹舵暟">鏅嬬骇鐜?/div>
+          <div class="stat-value"><span id="stat-promotion">鈥?/span><span class="unit" id="stat-promotion-unit">%</span></div>
+          <div class="stat-foot" id="stat-promotion-foot">鏄ㄦ棩娑ㄥ仠 鈫?浠婃棩杩炴澘</div>
         </article>
         <article class="stat-card">
-          <div class="stat-label">最强环节</div>
-          <div class="stat-value stat-stage" id="stat-strongest">—</div>
-          <div class="stat-foot" id="stat-strongest-foot">—</div>
+          <div class="stat-label">鏈€寮虹幆鑺?/div>
+          <div class="stat-value stat-stage" id="stat-strongest">鈥?/div>
+          <div class="stat-foot" id="stat-strongest-foot">鈥?/div>
         </article>
         <article class="stat-card">
-          <div class="stat-label">结构重心</div>
-          <div class="stat-value"><span id="stat-center">—</span><span class="unit">/ 7</span></div>
-          <div class="stat-foot" id="stat-center-label">—</div>
+          <div class="stat-label">缁撴瀯閲嶅績</div>
+          <div class="stat-value"><span id="stat-center">鈥?/span><span class="unit">/ 7</span></div>
+          <div class="stat-foot" id="stat-center-label">鈥?/div>
           <div class="center-gauge" aria-hidden="true"><span id="center-marker"></span></div>
         </article>
       </section>
@@ -56,38 +56,38 @@
         <article class="panel triangle-panel">
           <div class="panel-head">
             <div>
-              <h2>哈耶克三角</h2>
-              <p class="panel-sub">按离最终消费的远近排列 · 宽度 = 当日涨停家数</p>
+              <h2>鍝堣€跺厠涓夎</h2>
+              <p class="panel-sub">鎸夌鏈€缁堟秷璐圭殑杩滆繎鎺掑垪 路 瀹藉害 = 褰撴棩娑ㄥ仠瀹舵暟</p>
             </div>
             <div class="legend-axis" aria-hidden="true">
-              <span>上游资本品</span>
+              <span>涓婃父璧勬湰鍝?/span>
               <span class="axis-line"></span>
-              <span>下游消费</span>
+              <span>涓嬫父娑堣垂</span>
             </div>
           </div>
           <div class="triangle-wrap" id="triangle-wrap">
-            <svg id="triangle" viewBox="0 0 760 560" role="img" aria-label="哈耶克三角涨停分布"></svg>
+            <svg id="triangle" viewBox="0 0 760 560" role="img" aria-label="鍝堣€跺厠涓夎娑ㄥ仠鍒嗗竷"></svg>
             <div id="triangle-mobile" class="triangle-mobile"></div>
             <div id="tooltip" class="tooltip" hidden></div>
           </div>
           <div class="triangle-foot">
             <span id="unclassified-note" class="muted"></span>
-            <span class="hint">点击层级筛选个股</span>
+            <span class="hint">鐐瑰嚮灞傜骇绛涢€変釜鑲?/span>
           </div>
         </article>
 
         <aside class="side-stack">
           <article class="panel">
             <div class="panel-head">
-              <h2>连板结构</h2>
-              <span class="panel-kicker" id="max-board">最高 —</span>
+              <h2>杩炴澘缁撴瀯</h2>
+              <span class="panel-kicker" id="max-board">鏈€楂?鈥?/span>
             </div>
             <div id="boards" class="boards"></div>
           </article>
           <article class="panel">
             <div class="panel-head">
-              <h2>环节排行</h2>
-              <span class="panel-kicker">家数 / 占比</span>
+              <h2>鐜妭鎺掕</h2>
+              <span class="panel-kicker">瀹舵暟 / 鍗犳瘮</span>
             </div>
             <div id="stage-ranking" class="ranking"></div>
           </article>
@@ -97,13 +97,13 @@
       <section class="panel trend-panel">
         <div class="panel-head">
           <div>
-            <h2>历史趋势</h2>
-            <p class="panel-sub" id="trend-sub">每日各环节涨停家数</p>
+            <h2>鍘嗗彶瓒嬪娍</h2>
+            <p class="panel-sub" id="trend-sub">姣忔棩鍚勭幆鑺傛定鍋滃鏁?/p>
           </div>
           <div class="trend-legend" id="trend-legend" aria-hidden="true"></div>
         </div>
         <div class="trend-wrap" id="trend-wrap">
-          <svg id="trend" viewBox="0 0 1000 300" role="img" aria-label="历史涨停趋势"></svg>
+          <svg id="trend" viewBox="0 0 1000 300" role="img" aria-label="鍘嗗彶娑ㄥ仠瓒嬪娍"></svg>
           <div id="trend-tooltip" class="tooltip" hidden></div>
         </div>
       </section>
@@ -111,67 +111,67 @@
       <section class="panel table-panel">
         <div class="panel-head table-head">
           <div>
-            <h2>涨停个股</h2>
-            <p class="panel-sub" id="table-sub">—</p>
+            <h2>娑ㄥ仠涓偂</h2>
+            <p class="panel-sub" id="table-sub">鈥?/p>
           </div>
           <div class="table-controls">
-            <input id="search" type="search" placeholder="搜索代码 / 名称" aria-label="搜索代码或名称">
-            <select id="sort" aria-label="排序方式">
-              <option value="lianban">按连板数</option>
-              <option value="sealFund">按封板资金</option>
-              <option value="changePct">按涨幅</option>
+            <input id="search" type="search" placeholder="鎼滅储浠ｇ爜 / 鍚嶇О" aria-label="鎼滅储浠ｇ爜鎴栧悕绉?>
+            <select id="sort" aria-label="鎺掑簭鏂瑰紡">
+              <option value="lianban">鎸夎繛鏉挎暟</option>
+              <option value="sealFund">鎸夊皝鏉胯祫閲?/option>
+              <option value="changePct">鎸夋定骞?/option>
             </select>
           </div>
         </div>
-        <div class="stage-filter" id="stage-filter" role="group" aria-label="按环节筛选"></div>
+        <div class="stage-filter" id="stage-filter" role="group" aria-label="鎸夌幆鑺傜瓫閫?></div>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>代码</th>
-                <th>名称</th>
-                <th>环节</th>
-                <th>连板</th>
-                <th>涨幅</th>
-                <th>封板资金</th>
-                <th>首封</th>
-                <th>行业</th>
+                <th>浠ｇ爜</th>
+                <th>鍚嶇О</th>
+                <th>鐜妭</th>
+                <th>杩炴澘</th>
+                <th>娑ㄥ箙</th>
+                <th>灏佹澘璧勯噾</th>
+                <th>棣栧皝</th>
+                <th>琛屼笟</th>
               </tr>
             </thead>
             <tbody id="stock-body"></tbody>
           </table>
         </div>
-        <div id="table-empty" class="empty" hidden>没有符合条件的涨停股</div>
+        <div id="table-empty" class="empty" hidden>娌℃湁绗﹀悎鏉′欢鐨勬定鍋滆偂</div>
       </section>
 
       <section class="panel analysis-panel" id="analysis-panel" hidden>
         <div class="panel-head analysis-head">
           <div>
-            <h2>涨停原因分析 <span class="beta-badge">BETA</span></h2>
-            <p class="panel-sub" id="analysis-sub">同花顺原因标签 + 东方财富 F10 主营 · 测试版</p>
+            <h2>娑ㄥ仠鍘熷洜鍒嗘瀽 <span class="beta-badge">BETA</span></h2>
+            <p class="panel-sub" id="analysis-sub">鍚岃姳椤哄師鍥犳爣绛?+ 涓滄柟璐㈠瘜 F10 涓昏惀 路 娴嬭瘯鐗?/p>
           </div>
-          <button id="analysis-toggle" class="ghost-button" type="button" aria-pressed="true">隐藏</button>
+          <button id="analysis-toggle" class="ghost-button" type="button" aria-pressed="true">闅愯棌</button>
         </div>
         <div id="analysis-body" class="analysis-grid"></div>
-        <div id="analysis-empty" class="empty" hidden>暂无原因数据</div>
+        <div id="analysis-empty" class="empty" hidden>鏆傛棤鍘熷洜鏁版嵁</div>
         <p class="analysis-note" id="analysis-note">
-          原因标签来自同花顺涨停池，主营业务来自东方财富 F10；简析为规则拼接，仅作测试，不构成投资建议。
-        </p>
+          鍘熷洜鏍囩鏉ヨ嚜鍚岃姳椤烘定鍋滄睜锛屼富钀ヤ笟鍔℃潵鑷笢鏂硅储瀵?F10锛涚畝鏋愪负瑙勫垯鎷兼帴锛屼粎浣滄祴璇曪紝涓嶆瀯鎴愭姇璧勫缓璁€?        </p>
       </section>
     </main>
 
     <footer class="footer">
-      <p>数据：东方财富涨停池 · 口径：<span id="universe">沪深A股，剔除ST与北交所</span></p>
-      <p>哈耶克环节分类来自红利项目 · 仅做数据统计，不构成投资建议</p>
-      <p>如页面未显示最新数据，请强制刷新（Ctrl+F5）。</p>
+      <p>鏁版嵁锛氫笢鏂硅储瀵屾定鍋滄睜 路 鍙ｅ緞锛?span id="universe">娌繁A鑲★紝鍓旈櫎ST涓庡寳浜ゆ墍</span></p>
+      <p>鍝堣€跺厠鐜妭鍒嗙被鏉ヨ嚜绾㈠埄椤圭洰 路 浠呭仛鏁版嵁缁熻锛屼笉鏋勬垚鎶曡祫寤鸿</p>
+      <p>濡傞〉闈㈡湭鏄剧ず鏈€鏂版暟鎹紝璇峰己鍒跺埛鏂帮紙Ctrl+F5锛夈€?/p>
     </footer>
   </div>
 
   <div id="error-banner" class="error-banner" role="alert" hidden>
     <span id="error-message"></span>
-    <button id="error-retry" type="button">重试</button>
+    <button id="error-retry" type="button">閲嶈瘯</button>
   </div>
 
-  <script type="module" src="assets/app.js?v=20261028b"></script>
+  <script type="module" src="assets/app.js?v=20261029"></script>
 </body>
 </html>
+
