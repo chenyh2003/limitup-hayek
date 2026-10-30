@@ -5,7 +5,7 @@
 - 当日：7 层三角、环节排行、连板结构、结构重心、晋级率、涨停个股表
 - 历史：按环节堆叠的每日涨停家数趋势
 - 测试版：涨停原因分析（同花顺原因标签 + 东方财富 F10 主营业务）
-- 自动化：GitHub Actions 工作日北京时间 15:30 抓取，GitHub Pages 展示
+- 自动化：GitHub Actions 工作日北京时间 15:05 抓取（15:15/15:25/15:35/15:45 补偿），GitHub Pages 展示
 - 无需服务器、数据库、前端构建工具
 
 ## 统计口径
@@ -99,7 +99,7 @@ node scripts/build-map.mjs ..\hongli_rebuild\outputs\stage1_hayek.csv
 4. 打开 **Actions → Daily limit-up snapshot → Run workflow**，手动跑一次。
 5. 完成后访问 `https://<你的用户名>.github.io/limitup-hayek/`。
 
-之后每个工作日北京时间 15:30（UTC 07:30）会自动抓取。GitHub 的定时任务可能有几分钟延迟；如果当天数据还没更新，可以手动触发一次 workflow。
+之后每个工作日北京时间 15:05（UTC 07:05）会自动抓取，15:15/15:25/15:35/15:45 还有补偿触发；当天已更新时后续触发会跳过。GitHub 的定时任务可能延迟；如果当天数据还没更新，可以手动触发一次 workflow。
 
 > GitHub Pages 免费版要求仓库公开。页面里只有公开行情统计和哈耶克分类，不包含隐私数据。
 
