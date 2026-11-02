@@ -1,6 +1,6 @@
 {
   "date": "2026-10-30",
-  "capturedAt": "2026-11-02T02:50:43.107Z",
+  "capturedAt": "2026-11-02T03:21:00.797Z",
   "source": "eastmoney:getTopicZTPool",
   "universe": "沪深A股，剔除ST与北交所",
   "analysis": {
@@ -19,11 +19,11 @@
       "firstSeal": "09:30:00",
       "sealFund": 57075239,
       "price": 19.94,
-      "ma5": 16.63,
-      "stopLoss": 16.63,
+      "ma5": null,
+      "stopLoss": null,
       "limitPct": 0.1,
       "nextLimitPrice": 21.93,
-      "projectedMa5": 18.29
+      "projectedMa5": null
     }
   ],
   "total": 47,
