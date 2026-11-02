@@ -204,27 +204,72 @@ async function buildPromotion(todayStocks) {
 }
 
 async function fetchDailyCloses(code, endDate) {
+  const endIso = `${endDate.slice(0, 4)}-${endDate.slice(4, 6)}-${endDate.slice(6, 8)}`;
   const secid = `${String(code).startsWith('6') ? '1' : '0'}.${code}`;
-  const klineUrl = new URL('https://push2his.eastmoney.com/api/qt/stock/kline/get');
-  Object.entries({
-    secid,
-    fields1: 'f1,f2,f3,f4,f5,f6',
-    fields2: 'f51,f52,f53,f54,f55,f56,f57,f58,f59,f60,f61',
-    klt: '101',
-    fqt: '0',
-    beg: '0',
-    end: endDate,
-    lmt: '10'
-  }).forEach(([key, value]) => klineUrl.searchParams.set(key, value));
+  const market = String(code).startsWith('6') ? 'sh' : 'sz';
+
   try {
+    const klineUrl = new URL('https://push2his.eastmoney.com/api/qt/stock/kline/get');
+    Object.entries({
+      secid,
+      fields1: 'f1,f2,f3,f4,f5,f6',
+      fields2: 'f51,f52,f53,f54,f55,f56,f57,f58,f59,f60,f61',
+      klt: '101',
+      fqt: '0',
+      beg: '0',
+      end: endDate,
+      lmt: '10'
+    }).forEach(([key, value]) => klineUrl.searchParams.set(key, value));
     const payload = await fetchJson(klineUrl, { Referer: 'https://quote.eastmoney.com/' }, 2);
-    return (payload?.data?.klines || [])
+    const closes = (payload?.data?.klines || [])
       .map(line => Number(String(line).split(',')[2]))
       .filter(Number.isFinite);
-  } catch (err) {
-    console.warn(`日线获取失败 ${code}：${err.message}`);
-    return [];
+    if (closes.length) return closes;
+  } catch {
+    // Try the Tencent/Sina fallbacks below.
   }
+
+  try {
+    const tencentUrl = new URL('https://web.ifzq.gtimg.cn/appstock/app/kline/kline');
+    tencentUrl.searchParams.set('param', `${market}${code},day,,,20`);
+    const payload = await fetchJson(tencentUrl, { Referer: 'https://gu.qq.com/' }, 2);
+    const rows = payload?.data?.[`${market}${code}`]?.day || [];
+    const closes = rows
+      .filter(row => String(row[0]) <= endIso)
+      .map(row => Number(row[2]))
+      .filter(Number.isFinite);
+    if (closes.length) {
+      console.warn(`日线 ${code} 使用腾讯兜底`);
+      return closes;
+    }
+  } catch {
+    // Try Sina below.
+  }
+
+  try {
+    const sinaUrl = new URL('https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData');
+    Object.entries({
+      symbol: `${market}${code}`,
+      scale: '240',
+      ma: '5',
+      datalen: '20'
+    }).forEach(([key, value]) => sinaUrl.searchParams.set(key, value));
+    const payload = await fetchJson(sinaUrl, { Referer: 'https://finance.sina.com.cn/' }, 2);
+    const rows = Array.isArray(payload) ? payload : [];
+    const closes = rows
+      .filter(row => String(row.day) <= endIso)
+      .map(row => Number(row.close))
+      .filter(Number.isFinite);
+    if (closes.length) {
+      console.warn(`日线 ${code} 使用新浪兜底`);
+      return closes;
+    }
+  } catch {
+    // Report below.
+  }
+
+  console.warn(`日线获取失败 ${code}：东方财富/腾讯/新浪均无数据`);
+  return [];
 }
 
 function leaderForSignal(a, b) {
@@ -236,7 +281,12 @@ function leaderForSignal(a, b) {
   return b.sealFund > a.sealFund;
 }
 
-async function buildSignals(stocks) {
+async function buildSignals(stocks, previousSignals = []) {
+  const previousByCode = new Map(
+    previousSignals
+      .filter(signal => signal && signal.code)
+      .map(signal => [signal.code, signal])
+  );
   const groups = new Map();
   for (const stock of stocks) {
     if (stock.lianban < 4) continue;
@@ -259,6 +309,19 @@ async function buildSignals(stocks) {
       cursor += 1;
       const closes = await fetchDailyCloses(stock.code, dateCompact);
       const levels = computeSignalLevels(closes, stock.price, stock.code);
+      const previous = previousByCode.get(stock.code);
+      if (previous) {
+        if (levels.ma5 == null && previous.ma5 != null) {
+          levels.ma5 = previous.ma5;
+          levels.stopLoss = previous.ma5;
+        }
+        if (levels.nextLimitPrice == null && previous.nextLimitPrice != null) {
+          levels.nextLimitPrice = previous.nextLimitPrice;
+        }
+        if (levels.projectedMa5 == null && previous.projectedMa5 != null) {
+          levels.projectedMa5 = previous.projectedMa5;
+        }
+      }
       signals.push({
         code: stock.code,
         name: stock.name,
@@ -402,9 +465,18 @@ const stocks = rawPool
 
 const analysisStats = await enrichStocks(stocks);
 const promotionStats = await buildPromotion(stocks);
-const signals = await buildSignals(stocks);
-const summary = summarize(stocks, meta.stages);
 const date = `${dateCompact.slice(0, 4)}-${dateCompact.slice(4, 6)}-${dateCompact.slice(6, 8)}`;
+const snapshotPath = path.join(dataDir, `${date}.json`);
+let previousSignals = [];
+try {
+  if (fs.existsSync(snapshotPath)) {
+    previousSignals = JSON.parse(fs.readFileSync(snapshotPath, 'utf8')).signals || [];
+  }
+} catch {
+  previousSignals = [];
+}
+const signals = await buildSignals(stocks, previousSignals);
+const summary = summarize(stocks, meta.stages);
 const snapshot = {
   date,
   capturedAt: new Date().toISOString(),
