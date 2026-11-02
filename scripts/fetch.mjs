@@ -3,7 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   isExcluded, formatSealTime, classify, boardLabel, summarize, buildIndexDay, updateIndex,
-  cleanBusiness, mergeReasonMap, isProfileFresh, computePromotion
+  cleanBusiness, mergeReasonMap, isProfileFresh, computePromotion, computeSignalLevels
 } from './lib.mjs';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
@@ -203,6 +203,88 @@ async function buildPromotion(todayStocks) {
   };
 }
 
+async function fetchDailyCloses(code, endDate) {
+  const secid = `${String(code).startsWith('6') ? '1' : '0'}.${code}`;
+  const klineUrl = new URL('https://push2his.eastmoney.com/api/qt/stock/kline/get');
+  Object.entries({
+    secid,
+    fields1: 'f1,f2,f3,f4,f5,f6',
+    fields2: 'f51,f52,f53,f54,f55,f56,f57,f58,f59,f60,f61',
+    klt: '101',
+    fqt: '0',
+    beg: '0',
+    end: endDate,
+    lmt: '10'
+  }).forEach(([key, value]) => klineUrl.searchParams.set(key, value));
+  try {
+    const payload = await fetchJson(klineUrl, { Referer: 'https://quote.eastmoney.com/' }, 2);
+    return (payload?.data?.klines || [])
+      .map(line => Number(String(line).split(',')[2]))
+      .filter(Number.isFinite);
+  } catch (err) {
+    console.warn(`日线获取失败 ${code}：${err.message}`);
+    return [];
+  }
+}
+
+function leaderForSignal(a, b) {
+  if (!a) return true;
+  if (b.lianban !== a.lianban) return b.lianban > a.lianban;
+  const aSeal = a.firstSeal || '99:99:99';
+  const bSeal = b.firstSeal || '99:99:99';
+  if (aSeal !== bSeal) return bSeal < aSeal;
+  return b.sealFund > a.sealFund;
+}
+
+async function buildSignals(stocks) {
+  const groups = new Map();
+  for (const stock of stocks) {
+    if (stock.lianban < 4) continue;
+    const key = stock.industry || '未分类';
+    const current = groups.get(key);
+    if (leaderForSignal(current, stock)) groups.set(key, stock);
+  }
+
+  const leaders = [...groups.values()].sort((a, b) =>
+    b.lianban - a.lianban ||
+    (a.firstSeal || '99:99:99').localeCompare(b.firstSeal || '99:99:99') ||
+    b.sealFund - a.sealFund
+  );
+
+  const signals = [];
+  let cursor = 0;
+  async function worker() {
+    while (cursor < leaders.length) {
+      const stock = leaders[cursor];
+      cursor += 1;
+      const closes = await fetchDailyCloses(stock.code, dateCompact);
+      const levels = computeSignalLevels(closes, stock.price, stock.code);
+      signals.push({
+        code: stock.code,
+        name: stock.name,
+        industry: stock.industry || '未分类',
+        stage: stock.stage,
+        lianban: stock.lianban,
+        boardLabel: stock.boardLabel,
+        firstSeal: stock.firstSeal,
+        sealFund: stock.sealFund,
+        price: stock.price,
+        ...levels
+      });
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+  }
+  if (leaders.length) {
+    await Promise.all(Array.from({ length: Math.min(4, leaders.length) }, () => worker()));
+  }
+
+  return signals.sort((a, b) =>
+    b.lianban - a.lianban ||
+    (a.firstSeal || '99:99:99').localeCompare(b.firstSeal || '99:99:99') ||
+    b.sealFund - a.sealFund
+  );
+}
+
 function loadProfileCache() {
   try {
     const raw = JSON.parse(fs.readFileSync(profileCachePath, 'utf8'));
@@ -320,6 +402,7 @@ const stocks = rawPool
 
 const analysisStats = await enrichStocks(stocks);
 const promotionStats = await buildPromotion(stocks);
+const signals = await buildSignals(stocks);
 const summary = summarize(stocks, meta.stages);
 const date = `${dateCompact.slice(0, 4)}-${dateCompact.slice(4, 6)}-${dateCompact.slice(6, 8)}`;
 const snapshot = {
@@ -332,6 +415,7 @@ const snapshot = {
     withReason: stocks.filter(stock => stock.reason).length,
     withMainBusiness: stocks.filter(stock => stock.mainBusiness).length
   },
+  signals,
   ...summary,
   stocks
 };
@@ -356,6 +440,9 @@ if (promotionStats.latestDate) {
   const rate = latest?.rate == null ? '—' : `${(latest.rate * 100).toFixed(1)}%`;
   const avg = latest?.avg7 == null ? '—' : `${(latest.avg7 * 100).toFixed(1)}%`;
   console.log(`晋级率 ${rate}（${latest?.continueCount || 0}/${latest?.prevCount || 0}），近${latest?.avg7Days || 0}日均值 ${avg}`);
+}
+if (signals.length) {
+  console.log(`交易信号 ${signals.length} 个：${signals.map(s => `${s.name}(${s.lianban}板)`).join('、')}`);
 }
 if (summary.unclassified) {
   const codes = stocks.filter(s => s.stage === '未分类').map(s => `${s.code} ${s.name}`);

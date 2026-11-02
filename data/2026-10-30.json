@@ -1,6 +1,6 @@
 {
   "date": "2026-10-30",
-  "capturedAt": "2026-10-30T08:05:33.668Z",
+  "capturedAt": "2026-11-02T02:50:43.107Z",
   "source": "eastmoney:getTopicZTPool",
   "universe": "沪深A股，剔除ST与北交所",
   "analysis": {
@@ -8,6 +8,24 @@
     "withReason": 47,
     "withMainBusiness": 47
   },
+  "signals": [
+    {
+      "code": "001219",
+      "name": "青岛食品",
+      "industry": "休闲食品",
+      "stage": "终端消费品",
+      "lianban": 5,
+      "boardLabel": "5板",
+      "firstSeal": "09:30:00",
+      "sealFund": 57075239,
+      "price": 19.94,
+      "ma5": 16.63,
+      "stopLoss": 16.63,
+      "limitPct": 0.1,
+      "nextLimitPrice": 21.93,
+      "projectedMa5": 18.29
+    }
+  ],
   "total": 47,
   "stages": [
     {

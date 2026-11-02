@@ -1,6 +1,6 @@
 {
   "date": "2026-10-29",
-  "capturedAt": "2026-10-30T07:00:50.137Z",
+  "capturedAt": "2026-11-02T02:50:39.154Z",
   "source": "eastmoney:getTopicZTPool",
   "universe": "沪深A股，剔除ST与北交所",
   "analysis": {
@@ -8,6 +8,40 @@
     "withReason": 39,
     "withMainBusiness": 39
   },
+  "signals": [
+    {
+      "code": "001219",
+      "name": "青岛食品",
+      "industry": "休闲食品",
+      "stage": "终端消费品",
+      "lianban": 4,
+      "boardLabel": "4板",
+      "firstSeal": "09:25:00",
+      "sealFund": 165299295,
+      "price": 18.13,
+      "ma5": 15.12,
+      "stopLoss": 15.12,
+      "limitPct": 0.1,
+      "nextLimitPrice": 19.94,
+      "projectedMa5": 16.63
+    },
+    {
+      "code": "002708",
+      "name": "光洋股份",
+      "industry": "汽车零部",
+      "stage": "制造加工",
+      "lianban": 4,
+      "boardLabel": "4板",
+      "firstSeal": "09:25:00",
+      "sealFund": 8538217,
+      "price": 20.83,
+      "ma5": 17.37,
+      "stopLoss": 17.37,
+      "limitPct": 0.1,
+      "nextLimitPrice": 22.91,
+      "projectedMa5": 19.11
+    }
+  ],
   "total": 39,
   "stages": [
     {

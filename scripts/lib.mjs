@@ -127,6 +127,31 @@ export function isProfileFresh(entry, now = Date.now(), maxAgeDays = 90) {
   return now - updated < maxAgeDays * 86400000;
 }
 
+export function computeSignalLevels(closes, price, code) {
+  const values = (closes || []).map(Number).filter(Number.isFinite);
+  const lastFive = values.slice(-5);
+  const lastFour = values.slice(-4);
+  const ma5 = lastFive.length === 5
+    ? Number((lastFive.reduce((sum, value) => sum + value, 0) / 5).toFixed(2))
+    : null;
+  const limitPct = /^(300|301|302|688|689)/.test(String(code)) ? 0.2 : 0.1;
+  const current = Number(price);
+  const nextLimitPrice = Number.isFinite(current)
+    ? Number((current * (1 + limitPct)).toFixed(2))
+    : null;
+  const projectedMa5 = lastFour.length === 4 && nextLimitPrice != null
+    ? Number(((lastFour.reduce((sum, value) => sum + value, 0) + nextLimitPrice) / 5).toFixed(2))
+    : null;
+
+  return {
+    ma5,
+    stopLoss: ma5,
+    limitPct,
+    nextLimitPrice,
+    projectedMa5
+  };
+}
+
 export function computePromotion(history, targetDate, windowSize = 7) {
   const targetIndex = history.findIndex(day => day.date === targetDate);
   if (targetIndex < 1) return null;

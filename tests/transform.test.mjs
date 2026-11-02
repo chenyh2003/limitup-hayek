@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   isExcluded, formatSealTime, classify, summarize, buildIndexDay, updateIndex,
-  cleanBusiness, reasonTags, mergeReasonMap, isProfileFresh, computePromotion
+  cleanBusiness, reasonTags, mergeReasonMap, isProfileFresh, computePromotion, computeSignalLevels
 } from '../scripts/lib.mjs';
 
 const stages = [
@@ -146,6 +146,28 @@ test('晋级率：近7日滚动均值最多取7天', () => {
   assert.equal(result.avg7Days, 7);
   assert.equal(result.rate, 1);
   assert.equal(result.avg7, 1);
+});
+
+test('交易信号：MA5 止损与次日涨停后的 MA5', () => {
+  const result = computeSignalLevels([12.38, 13.62, 14.98, 16.48, 18.13], 18.13, '001219');
+  assert.equal(result.ma5, 15.12);
+  assert.equal(result.stopLoss, 15.12);
+  assert.equal(result.limitPct, 0.1);
+  assert.equal(result.nextLimitPrice, 19.94);
+  assert.equal(result.projectedMa5, 16.63);
+});
+
+test('交易信号：20% 涨停板与数据不足', () => {
+  const result = computeSignalLevels([10, 11, 12, 13, 14], 14, '300001');
+  assert.equal(result.limitPct, 0.2);
+  assert.equal(result.nextLimitPrice, 16.8);
+  assert.equal(result.ma5, 12);
+  assert.equal(result.projectedMa5, 13.36);
+
+  const short = computeSignalLevels([10, 11], 11, '600001');
+  assert.equal(short.ma5, null);
+  assert.equal(short.projectedMa5, null);
+  assert.equal(short.nextLimitPrice, 12.1);
 });
 
 test('索引去重、排序并保留最新日期', () => {

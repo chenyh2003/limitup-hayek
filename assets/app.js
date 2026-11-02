@@ -69,6 +69,11 @@ const els = {
   analysisEmpty: $('#analysis-empty'),
   analysisSub: $('#analysis-sub'),
   analysisToggle: $('#analysis-toggle'),
+  signalCount: $('#signal-count'),
+  signalSub: $('#signal-sub'),
+  signalBody: $('#signal-body'),
+  signalEmpty: $('#signal-empty'),
+  signalTableWrap: $('#signal-table-wrap'),
   universe: $('#universe'),
   errorBanner: $('#error-banner'),
   errorMessage: $('#error-message'),
@@ -239,6 +244,7 @@ function renderAll() {
   renderStageFilter();
   renderStocks();
   renderAnalysis();
+  renderSignals();
   renderTrend();
 
   els.updated.textContent = `采集于 ${fmtStamp(state.day.capturedAt)} · 共 ${state.index.days.length} 个交易日`;
@@ -565,6 +571,54 @@ function renderAnalysis() {
   }).join('');
 }
 
+function renderSignals() {
+  if (!els.signalBody || !els.signalEmpty || !els.signalTableWrap) return;
+  const d = state.day;
+  const signals = Array.isArray(d.signals) ? d.signals : null;
+  els.signalCount.textContent = signals ? `${signals.length} 个` : '—';
+  els.signalSub.textContent = `${d.date} · 4 板以上 · 同行业只取龙头 · 止损=当日 MA5`;
+
+  if (!signals) {
+    els.signalBody.innerHTML = '';
+    els.signalTableWrap.hidden = true;
+    els.signalEmpty.hidden = false;
+    els.signalEmpty.textContent = '该日未生成交易信号（从 2026-10-29 起）';
+    return;
+  }
+
+  if (!signals.length) {
+    els.signalBody.innerHTML = '';
+    els.signalTableWrap.hidden = true;
+    els.signalEmpty.hidden = false;
+    els.signalEmpty.textContent = '今日没有 4 板以上的行业龙头信号';
+    return;
+  }
+
+  els.signalTableWrap.hidden = false;
+  els.signalEmpty.hidden = true;
+  els.signalBody.innerHTML = signals.map(s => {
+    const stage = stageMeta(s.stage);
+    const price = s.price == null ? '—' : Number(s.price).toFixed(2);
+    const ma5 = s.ma5 == null ? '—' : Number(s.ma5).toFixed(2);
+    const next = s.nextLimitPrice == null ? '—' : Number(s.nextLimitPrice).toFixed(2);
+    const projected = s.projectedMa5 == null ? '—' : Number(s.projectedMa5).toFixed(2);
+    const limit = s.limitPct === 0.2 ? '20%' : '10%';
+    return `<tr>
+      <td>
+        <div class="sig-name">${escapeHtml(s.name)}<span class="leader-badge">龙头</span></div>
+        <div class="code">${escapeHtml(s.code)}</div>
+      </td>
+      <td><span class="stage-chip"><i style="background:${stage?.color || '#9A9082'}"></i>${escapeHtml(s.industry || '未分类')}</span></td>
+      <td><span class="board-badge b3">${escapeHtml(s.boardLabel)}</span></td>
+      <td class="muted-cell">${escapeHtml(s.firstSeal || '—')}</td>
+      <td class="num">${price}</td>
+      <td class="num sig-stop">${ma5}<small>跌破离场</small></td>
+      <td class="num">${next}<small>涨停 +${limit}</small></td>
+      <td class="num sig-support">${projected}<small>若继续涨停</small></td>
+    </tr>`;
+  }).join('');
+}
+
 function renderTrend() {
   const days = state.index?.days || [];
   const stages = state.meta.stages;
@@ -819,6 +873,13 @@ function renderEmpty() {
   els.trendLegend.innerHTML = '';
   if (els.analysisPanel) els.analysisPanel.hidden = true;
   if (els.analysisBody) els.analysisBody.innerHTML = '';
+  if (els.signalBody) els.signalBody.innerHTML = '';
+  if (els.signalEmpty) {
+    els.signalEmpty.hidden = false;
+    els.signalEmpty.textContent = '暂无数据';
+  }
+  if (els.signalTableWrap) els.signalTableWrap.hidden = true;
+  if (els.signalCount) els.signalCount.textContent = '—';
 }
 
 async function boot() {

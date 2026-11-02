@@ -887,6 +887,103 @@ tbody tr:hover { background: #fbf7f0; }
   line-height: 1.7;
 }
 
+/* ---------- daily signals ---------- */
+.signal-panel { margin-top: 16px; }
+
+.signal-rule {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin-top: 14px;
+  padding: 10px 12px;
+  color: var(--muted);
+  background: #fbf6ee;
+  border: 1px solid var(--line-soft);
+  border-radius: 12px;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.signal-rule span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.signal-rule span::before {
+  content: "";
+  width: 4px;
+  height: 4px;
+  background: #b9a98f;
+  border-radius: 50%;
+}
+
+.signal-table-wrap {
+  margin-top: 12px;
+  overflow-x: auto;
+  border: 1px solid var(--line-soft);
+  border-radius: 14px;
+}
+
+.signal-table {
+  min-width: 980px;
+}
+
+.signal-table th {
+  background: #faf6ef;
+}
+
+.signal-table td {
+  vertical-align: middle;
+}
+
+.sig-name {
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.leader-badge {
+  display: inline-flex;
+  padding: 2px 6px;
+  margin-left: 6px;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-radius: 999px;
+  font-size: 8px;
+  font-weight: 700;
+  vertical-align: middle;
+}
+
+.sig-stop {
+  color: var(--accent);
+  font-weight: 650;
+}
+
+.sig-stop small,
+.sig-support small,
+.sig-price small {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 400;
+}
+
+.sig-support {
+  color: #2f7d5a;
+  font-weight: 650;
+}
+
+.signal-note {
+  margin: 14px 0 0;
+  padding-top: 10px;
+  color: var(--muted);
+  border-top: 1px dashed var(--line);
+  font-size: 9px;
+  line-height: 1.7;
+}
+
 /* ---------- footer / errors / tooltip ---------- */
 .footer {
   margin-top: 28px;
@@ -1047,6 +1144,7 @@ tbody tr:hover { background: #fbf7f0; }
     max-height: 620px;
   }
   .analysis-card { padding: 13px; }
+  .signal-rule { flex-direction: column; gap: 4px; }
   .table-head { align-items: stretch; }
   .table-controls { width: 100%; }
   .table-controls input { flex: 1; width: auto; }
