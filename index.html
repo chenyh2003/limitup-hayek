@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#f6f3ec">
   <title>涨停 · 哈耶克三角</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="assets/style.css?v=20261029">
+  <link rel="stylesheet" href="assets/style.css?v=20261102">
 </head>
 <body>
   <div class="page">
@@ -163,15 +163,15 @@
         <div class="panel-head">
           <div>
             <h2>每日交易信号 <span class="beta-badge">规则</span></h2>
-            <p class="panel-sub" id="signal-sub">4 板以上 · 同行业只取龙头 · 止损=当日 MA5</p>
+            <p class="panel-sub" id="signal-sub">4 板以上 · 同行业只取龙头 · 止损与补仓支撑均为当日预设</p>
           </div>
           <span class="panel-kicker" id="signal-count">—</span>
         </div>
         <div class="signal-rule">
           <span>筛选：4 板及以上</span>
           <span>同行业龙头：连板多优先，连板相同比首封时间</span>
-          <span>止损：当日 MA5</span>
-          <span>补仓参考：次日继续涨停，按涨停价估算次日 MA5</span>
+          <span>明日止损：当日收盘 MA5</span>
+          <span>明日补仓支撑：假设次日涨停，按涨停价估算次日 MA5（当日算好）</span>
         </div>
         <div class="signal-table-wrap" id="signal-table-wrap">
           <table class="signal-table">
@@ -182,9 +182,9 @@
                 <th>连板</th>
                 <th>首封</th>
                 <th>今收</th>
-                <th>止损（MA5）</th>
+                <th>明日止损（当日 MA5）</th>
                 <th>明日涨停价</th>
-                <th>明日 MA5（补仓参考）</th>
+                <th>明日补仓支撑（假设涨停）</th>
               </tr>
             </thead>
             <tbody id="signal-body"></tbody>
@@ -192,7 +192,7 @@
         </div>
         <div id="signal-empty" class="empty" hidden>今日没有 4 板以上的行业龙头信号</div>
         <p class="signal-note">
-          规则示例：4 板以上、同行业只取龙头；次日跌破当日 MA5 视为止损，若次日继续涨停，则用涨停价估算次日 MA5 作为补仓支撑参考。仅为规则演示，不构成投资建议。
+          规则示例：4 板以上、同行业只取龙头；止损位与补仓支撑位都在当天收盘后预设。明日跌破止损位离场；假设明日继续涨停，按明日涨停价估算明日 MA5 作为补仓支撑。仅为规则演示，不构成投资建议。
         </p>
       </section>
     </main>
@@ -209,6 +209,6 @@
     <button id="error-retry" type="button">重试</button>
   </div>
 
-  <script type="module" src="assets/app.js?v=20261029"></script>
+  <script type="module" src="assets/app.js?v=20261102"></script>
 </body>
 </html>

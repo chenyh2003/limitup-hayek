@@ -1,4 +1,4 @@
-import { FEATURES } from './features.js?v=20261029';
+import { FEATURES } from './features.js?v=20261102';
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -576,7 +576,7 @@ function renderSignals() {
   const d = state.day;
   const signals = Array.isArray(d.signals) ? d.signals : null;
   els.signalCount.textContent = signals ? `${signals.length} 个` : '—';
-  els.signalSub.textContent = `${d.date} · 4 板以上 · 同行业只取龙头 · 止损=当日 MA5`;
+  els.signalSub.textContent = `${d.date} · 4 板以上 · 同行业龙头 · 止损/补仓支撑均为当日预设`;
 
   if (!signals) {
     els.signalBody.innerHTML = '';
@@ -614,7 +614,7 @@ function renderSignals() {
       <td class="num">${price}</td>
       <td class="num sig-stop">${ma5}<small>跌破离场</small></td>
       <td class="num">${next}<small>涨停 +${limit}</small></td>
-      <td class="num sig-support">${projected}<small>若继续涨停</small></td>
+      <td class="num sig-support">${projected}<small>假设涨停</small></td>
     </tr>`;
   }).join('');
 }
