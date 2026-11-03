@@ -1,4 +1,4 @@
-import { FEATURES } from './features.js?v=20261102';
+import { FEATURES } from './features.js?v=20261103';
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -576,7 +576,7 @@ function renderSignals() {
   const d = state.day;
   const signals = Array.isArray(d.signals) ? d.signals : null;
   els.signalCount.textContent = signals ? `${signals.length} 个` : '—';
-  els.signalSub.textContent = `${d.date} · 4 板以上 · 同行业龙头 · 止损/补仓支撑均为当日预设`;
+  els.signalSub.textContent = `${d.date} · 4 板以上 · 同行业龙头 · 止损/两层补仓支撑均为当日预设`;
 
   if (!signals) {
     els.signalBody.innerHTML = '';
@@ -611,10 +611,10 @@ function renderSignals() {
       <td><span class="stage-chip"><i style="background:${stage?.color || '#9A9082'}"></i>${escapeHtml(s.industry || '未分类')}</span></td>
       <td><span class="board-badge b3">${escapeHtml(s.boardLabel)}</span></td>
       <td class="muted-cell">${escapeHtml(s.firstSeal || '—')}</td>
-      <td class="num">${price}</td>
+      <td class="num sig-price">${price}<small>支撑① 今日涨停</small></td>
       <td class="num sig-stop">${ma5}<small>跌破离场</small></td>
       <td class="num">${next}<small>涨停 +${limit}</small></td>
-      <td class="num sig-support">${projected}<small>假设涨停</small></td>
+      <td class="num sig-support">${projected}<small>支撑② · 假设涨停</small></td>
     </tr>`;
   }).join('');
 }

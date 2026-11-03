@@ -16,10 +16,22 @@ const hayekMap = JSON.parse(fs.readFileSync(path.join(dataDir, 'hayek_map.json')
 const analysisEnabled = process.env.ANALYSIS !== '0' && !process.argv.includes('--no-analysis');
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36';
 
-function cstDate() {
-  return new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit'
-  }).format(new Date()).replaceAll('-', '');
+function latestCompletedDateCompact() {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Shanghai',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    hourCycle: 'h23'
+  }).formatToParts(new Date());
+  const get = type => Number(parts.find(part => part.type === type)?.value || 0);
+  const target = new Date(Date.UTC(get('year'), get('month') - 1, get('day')));
+  if (get('hour') < 15) target.setUTCDate(target.getUTCDate() - 1);
+  const year = target.getUTCFullYear();
+  const month = String(target.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(target.getUTCDate()).padStart(2, '0');
+  return `${year}${month}${day}`;
 }
 
 function parseDateArg(argv) {
@@ -27,7 +39,7 @@ function parseDateArg(argv) {
   if (eq) return eq.split('=')[1];
   const idx = argv.indexOf('--date');
   if (idx >= 0 && argv[idx + 1]) return argv[idx + 1];
-  return cstDate();
+  return latestCompletedDateCompact();
 }
 
 const dateCompact = String(parseDateArg(process.argv.slice(2))).replaceAll('-', '');
