@@ -1,11 +1,11 @@
 {
   "date": "2026-11-09",
-  "capturedAt": "2026-11-09T17:14:58.036Z",
+  "capturedAt": "2026-11-09T17:26:01.410Z",
   "source": "eastmoney:getTopicZTPool",
   "universe": "沪深A股，剔除ST与北交所",
   "analysis": {
     "enabled": true,
-    "withReason": 0,
+    "withReason": 54,
     "withMainBusiness": 54
   },
   "signals": [
@@ -92,7 +92,7 @@
       "broken": 1,
       "industry": "工业金属",
       "daysBoard": "11天7板",
-      "reason": "",
+      "reason": "光伏边框+液冷铝材+机器人布局+三季报扭亏",
       "mainBusiness": "主要是建筑铝型材、工业铝型材和建筑铝模板的研发、生产、销售"
     },
     {
@@ -112,7 +112,7 @@
       "broken": 0,
       "industry": "厨卫电器",
       "daysBoard": "2天2板",
-      "reason": "",
+      "reason": "“东方”+储能+光伏",
       "mainBusiness": "清洁能源热能应用板块(空气能热水和采暖、太阳能热水和采暖)、清洁能源电能应用板块(分布式光储热一体化业务)及厨电板块"
     },
     {
@@ -132,7 +132,7 @@
       "broken": 0,
       "industry": "电力",
       "daysBoard": "2天2板",
-      "reason": "",
+      "reason": "“东方”+光伏+重组",
       "mainBusiness": "新能源电站开发、投资、建设及运营为核心的主业范围、并围绕此构建了全新的商业模式"
     },
     {
@@ -152,7 +152,7 @@
       "broken": 0,
       "industry": "物流",
       "daysBoard": "2天2板",
-      "reason": "",
+      "reason": "“东方”+光刻机保税维修+智慧仓",
       "mainBusiness": "主要围绕全球知名消费品品牌客户和全球头部电商平台客户、通过前期专业差异化供应链方案咨询及设计、为客户提供一体化供应链服务和产品采购分销交易服务"
     },
     {
@@ -172,7 +172,7 @@
       "broken": 1,
       "industry": "铁路公路",
       "daysBoard": "8天4板",
-      "reason": "",
+      "reason": "冰雪旅游保障+高速公路运营+黑龙江国资",
       "mainBusiness": "高速公路收费管理"
     },
     {
@@ -192,7 +192,7 @@
       "broken": 4,
       "industry": "一般零售",
       "daysBoard": "5天3板",
-      "reason": "",
+      "reason": "“东方”+百货零售+儿科医疗+回购注销",
       "mainBusiness": "百货及家用电器的零售、食品的生产和销售、医疗健康业务"
     },
     {
@@ -212,7 +212,7 @@
       "broken": 0,
       "industry": "炼化及贸",
       "daysBoard": "2天2板",
-      "reason": "",
+      "reason": "航材国产化+AI航检眼镜+三季报增长",
       "mainBusiness": "集研发、生产、销售于一体的航空器材解决方案综合服务"
     },
     {
@@ -232,7 +232,7 @@
       "broken": 9,
       "industry": "贸易Ⅱ",
       "daysBoard": "2天2板",
-      "reason": "",
+      "reason": "“东方”+货物贸易+现代物流+上海国企",
       "mainBusiness": "货物贸易、现代物流和大健康产业"
     },
     {
@@ -252,7 +252,7 @@
       "broken": 10,
       "industry": "农化制品",
       "daysBoard": "7天4板",
-      "reason": "",
+      "reason": "“羊”字辈+百草枯+农业无人机+三季报扭亏",
       "mainBusiness": "覆盖绿色环保农药、三药中间体的研发、生产、销售及技术服务、具备专业化、全球化经营布局"
     },
     {
@@ -272,7 +272,7 @@
       "broken": 0,
       "industry": "化学制品",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "民爆一体化+资产注入预期+央企",
       "mainBusiness": "民爆器材产品及装备的研发、生产、销售、爆破、配送、工程技术服务、设计及施工等一体化经营业务、生态产业运营管理业务"
     },
     {
@@ -292,7 +292,7 @@
       "broken": 0,
       "industry": "小金属",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "商业航天+可控核聚变+稀贵金属",
       "mainBusiness": "钛及钛合金加工材、层状金属复合材料、稀贵金属材料、金属纤维及制品、钨钼材料及制品、钛制日用品和精密加工制造等"
     },
     {
@@ -312,7 +312,7 @@
       "broken": 0,
       "industry": "通用设备",
       "daysBoard": "8天4板",
-      "reason": "",
+      "reason": "冰雪工程+数据中心液冷+船舶制冷+股权受让",
       "mainBusiness": "公司围绕冷热产业、致力于发展工业制冷制热事业领域、商用冷冻冷藏事业领域、空调与环境事业领域、工程与服务事业领域以及新事业领域、覆盖了冷热产业链的关键领域、打造了完整的冷热产业链"
     },
     {
@@ -332,7 +332,7 @@
       "broken": 1,
       "industry": "元件",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "印制电路板+覆铜板+商业航天+三季报增长",
       "mainBusiness": "印制线路板、液晶显示器及触摸屏、超薄及特种覆铜板、超声电子仪器的研制、生产和销售"
     },
     {
@@ -352,7 +352,7 @@
       "broken": 0,
       "industry": "包装印刷",
       "daysBoard": "8天4板",
-      "reason": "",
+      "reason": "太空算力+商业航天+特种防伪环保纸",
       "mainBusiness": "特种环保纸的销售、印刷品的研发、生产及销售、工业大麻精深加工及应用场景研发、新型烟草的研发及销售等四大业务"
     },
     {
@@ -372,7 +372,7 @@
       "broken": 0,
       "industry": "元件",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "PCB+AI服务器+回购",
       "mainBusiness": "高精密印制电路板的研发、生产和销售"
     },
     {
@@ -392,7 +392,7 @@
       "broken": 4,
       "industry": "塑料",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "人形机器人+机器人下线+智元入主+风电树脂",
       "mainBusiness": "环保高性能耐腐蚀材料、风电叶片用材料、新型复合材料以及循环经济材料的研发、生产及销售"
     },
     {
@@ -412,7 +412,7 @@
       "broken": 1,
       "industry": "光学光电",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "卫星通信终端+高速铜缆+“羊”字辈",
       "mainBusiness": "多种射频电缆及相关配套产品、显示器件、卫星通信终端以及5G基站等产品与服务的研发、制造和销售"
     },
     {
@@ -432,7 +432,7 @@
       "broken": 2,
       "industry": "医疗服务",
       "daysBoard": "9天5板",
-      "reason": "",
+      "reason": "脑机接口+医疗服务+国资控股+“羊”字辈",
       "mainBusiness": "医疗服务业务、医药流通业务、生物科技业务"
     },
     {
@@ -452,7 +452,7 @@
       "broken": 0,
       "industry": "计算机设",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "低空安全+智能安防+军工+光电科技并购",
       "mainBusiness": "智能安防业务、城市安全运营服务"
     },
     {
@@ -472,7 +472,7 @@
       "broken": 0,
       "industry": "汽车零部",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "人形机器人+电子皮肤+汽车洗涤系统",
       "mainBusiness": "汽车零部件产品、摩托车及平衡车等短交通零部件产品和智能家居传感器等产品的研发、生产和销售"
     },
     {
@@ -492,7 +492,7 @@
       "broken": 0,
       "industry": "燃气Ⅱ",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "七腾机器人+人形机器人+LNG运贸",
       "mainBusiness": "LNG的采购、运输、销售以及原油、普货的运输服务"
     },
     {
@@ -512,7 +512,7 @@
       "broken": 0,
       "industry": "装修装饰",
       "daysBoard": "6天3板",
-      "reason": "",
+      "reason": "入股深迪半导体+AI设计+室内设计",
       "mainBusiness": "建筑室内设计及装修"
     },
     {
@@ -532,7 +532,7 @@
       "broken": 1,
       "industry": "游戏Ⅱ",
       "daysBoard": "14天7板",
-      "reason": "",
+      "reason": "AI漫剧+游戏运营+北京国资",
       "mainBusiness": "影院及院线运营管理业务、游戏研发发行与运营业务、漫剧制作与发行业务"
     },
     {
@@ -552,7 +552,7 @@
       "broken": 4,
       "industry": "通用设备",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "冰雪产业+氦气压缩机+商业航天+数据中心制冷",
       "mainBusiness": "制冰设备业务、压缩机(组)产品及系统应用、油气服务业务、中央空调系统业务、氢能源业务"
     },
     {
@@ -572,7 +572,7 @@
       "broken": 0,
       "industry": "通用设备",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "工业机器人+冶金装备+三季报减亏",
       "mainBusiness": "从事高端装备的研发、生产、销售和智慧运维服务"
     },
     {
@@ -592,7 +592,7 @@
       "broken": 1,
       "industry": "化学制品",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "机器人触觉+柔性传感器+胶粘材料",
       "mainBusiness": "各类胶粘材料、功能性薄膜材料、特种纸的研发、生产及销售"
     },
     {
@@ -612,7 +612,7 @@
       "broken": 6,
       "industry": "汽车零部",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "机器人关节+PCB+黄山国资+“羊”字辈",
       "mainBusiness": "专注于各类新能源与燃油汽车精密零部件、高端工业装备、智能机器人零部件及电子线路板、电子元器件的研发、生产与销售"
     },
     {
@@ -632,7 +632,7 @@
       "broken": 2,
       "industry": "煤炭开采",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "煤炭涨价+煤炭主业+国企控股",
       "mainBusiness": "涵盖煤炭开采、洗选加工与销售、煤矿工程施工等业务"
     },
     {
@@ -652,7 +652,7 @@
       "broken": 1,
       "industry": "汽车零部",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "人形机器人+阿凡达铌微合金+车轮",
       "mainBusiness": "汽车车轮的研发、生产、销售"
     },
     {
@@ -672,7 +672,7 @@
       "broken": 1,
       "industry": "中药Ⅱ",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "中药创新药+盘龙七片+回购",
       "mainBusiness": "集药材规范化种植、药品生产、研发、销售和医药物流为核心产业的现代高新技术企业、公司经营药品品类丰富、以骨科风湿类为主要治疗领域、代表产品为盘龙七片、同时涵盖肝胆类、心脑血管类、妇科类、皮肤病、儿科类等多个治疗领域"
     },
     {
@@ -692,7 +692,7 @@
       "broken": 0,
       "industry": "焦炭Ⅱ",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "煤炭+焦炉煤气制氢+大型H型钢",
       "mainBusiness": "焦炭和型钢产品的生产与销售"
     },
     {
@@ -712,7 +712,7 @@
       "broken": 0,
       "industry": "计算机设",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "星载算力一体机+低空经济+AI应用+音视频产品",
       "mainBusiness": "视频应用综合服务业务、提供视频会议系统和视频监控系统的软硬件开发、设备制造、产品销售及技术服务"
     },
     {
@@ -732,7 +732,7 @@
       "broken": 0,
       "industry": "通信设备",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "“东方”+卫星互联网+商业航天+专网通信",
       "mainBusiness": "信息通信、金融科技及智能制造等业务"
     },
     {
@@ -752,7 +752,7 @@
       "broken": 2,
       "industry": "家居用品",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "培育钻石+锆钛矿选矿+高端家居",
       "mainBusiness": "家居业务、锆钛矿选矿业务"
     },
     {
@@ -772,7 +772,7 @@
       "broken": 0,
       "industry": "电机Ⅱ",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "机器人关节模组+无框电机+商业航天",
       "mainBusiness": "微特电机、风机及智能化组件的研发、生产与销售"
     },
     {
@@ -792,7 +792,7 @@
       "broken": 4,
       "industry": "通信设备",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "卫星通信+6G+宽带连接终端+次新股",
       "mainBusiness": "自主型号系列宽带连接终端设备的设计、研发、生产和销售"
     },
     {
@@ -812,7 +812,7 @@
       "broken": 1,
       "industry": "饰品",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "精密减速器+机器人+商业航天+液冷",
       "mainBusiness": "专业从事世界名表经销和服务、与多个世界高端品牌和主流品牌建立了密切的合作关系"
     },
     {
@@ -832,7 +832,7 @@
       "broken": 0,
       "industry": "一般零售",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "商贸零售+商业地产+洗染服务+上海国资",
       "mainBusiness": "商贸零售、商铺租赁、洗染服务"
     },
     {
@@ -852,7 +852,7 @@
       "broken": 0,
       "industry": "养殖业",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "生猪养殖+猪肉食品+预重整",
       "mainBusiness": "生猪养殖和猪肉制品加工"
     },
     {
@@ -872,7 +872,7 @@
       "broken": 1,
       "industry": "通用设备",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "机器人+优必选入主+机电组件+电控产品",
       "mainBusiness": "从事园林机械零部件、汽车零部件和液压零部件的研发、生产和销售"
     },
     {
@@ -892,7 +892,7 @@
       "broken": 0,
       "industry": "元件",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "回购+人形机器人PCB+AI服务器PCB",
       "mainBusiness": "各类印制电路板(PCB)的研发、生产与销售"
     },
     {
@@ -912,7 +912,7 @@
       "broken": 1,
       "industry": "基础建设",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "冰雪经济+海外基建+寒区施工+黑龙江国资",
       "mainBusiness": "公路工程、市政道路桥梁等施工及咨询设计、以及相关基础设施投资、运维、养护和管理等工作"
     },
     {
@@ -932,7 +932,7 @@
       "broken": 2,
       "industry": "装修建材",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "冰雪经济+数据中心+冷库围护",
       "mainBusiness": "专注于冷库和工业建筑围护系统节能隔热保温材料(金属面节能隔热保温夹芯板及配套产品)的研发、设计、生产和销售"
     },
     {
@@ -952,7 +952,7 @@
       "broken": 2,
       "industry": "电网设备",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "物理AI+具身智能+防冰机器人+电力巡检",
       "mainBusiness": "生产和销售输电线路智能巡检系统、移动智能终端等产品"
     },
     {
@@ -972,7 +972,7 @@
       "broken": 0,
       "industry": "汽车零部",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "人形机器人+六维力传感器+压力传感器",
       "mainBusiness": "公司业务分为动力总成业务及传感器业务"
     },
     {
@@ -992,7 +992,7 @@
       "broken": 4,
       "industry": "纺织制造",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "羽绒+寒潮+产能扩张",
       "mainBusiness": "高规格羽绒产品的研发、生产和销售"
     },
     {
@@ -1012,7 +1012,7 @@
       "broken": 0,
       "industry": "照明设备",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "半导体照明+LED照明+智慧灯杆+车路云协同",
       "mainBusiness": "主要从事智慧照明、户外照明、户外庭院用品、景观照明、室内照明产品的研发、生产和销售"
     },
     {
@@ -1032,7 +1032,7 @@
       "broken": 0,
       "industry": "通用设备",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "航天紧固件+核电紧固件+不锈钢紧固件",
       "mainBusiness": "不锈钢紧固件产品的研发、生产与销售"
     },
     {
@@ -1052,7 +1052,7 @@
       "broken": 0,
       "industry": "工程机械",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "工程机械+三季报增长+专精特新",
       "mainBusiness": "工程机械核心零部件及总成的研发设计、开发、精密锻造、智能制造、精密检测、销售及配套技术服务"
     },
     {
@@ -1072,7 +1072,7 @@
       "broken": 2,
       "industry": "燃气Ⅱ",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "“东方”+寒潮供暖+天然气+集中供热",
       "mainBusiness": "公司集城市基础设施和公用事业投资、建设、运营和管理为一体、专注于城市燃气供应、燃气工程安装、城市集中供热的公用事业综合服务商"
     },
     {
@@ -1092,7 +1092,7 @@
       "broken": 1,
       "industry": "汽车零部",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "机器人+汽车零部件+国企改革",
       "mainBusiness": "设计、生产和销售汽车零部件"
     },
     {
@@ -1112,7 +1112,7 @@
       "broken": 1,
       "industry": "水泥",
       "daysBoard": "3天2板",
-      "reason": "",
+      "reason": "商品混凝土+智算布局+海南自贸港",
       "mainBusiness": "商品混凝土生产与销售、市政环卫业务、园林绿化业务以及租赁业务"
     },
     {
@@ -1132,7 +1132,7 @@
       "broken": 3,
       "industry": "游戏Ⅱ",
       "daysBoard": "6天4板",
-      "reason": "",
+      "reason": "短剧+游戏+股权转让+三季报减亏",
       "mainBusiness": "网络游戏研发、运营以及影视剧制作、发行业务"
     },
     {
@@ -1152,7 +1152,7 @@
       "broken": 1,
       "industry": "焦炭Ⅱ",
       "daysBoard": "1天1板",
-      "reason": "",
+      "reason": "焦炭+钢企直供+云南国资",
       "mainBusiness": "煤焦化和重型机械两大板块"
     }
   ]
