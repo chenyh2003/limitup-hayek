@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-13T15:10:20.933Z",
+  "updatedAt": "2026-11-16T16:48:30.452Z",
   "window": 7,
   "days": {
     "2026-10-20": {
@@ -100,58 +100,66 @@
     },
     "2026-11-05": {
       "prevDate": "2026-11-04",
-      "prevCount": 112,
+      "prevCount": 116,
       "continueCount": 21,
-      "rate": 0.1875,
-      "avg7": 0.2188,
-      "avg7Days": 2
+      "rate": 0.181,
+      "avg7": 0.181,
+      "avg7Days": 1
     },
     "2026-11-06": {
       "prevDate": "2026-11-05",
       "prevCount": 83,
-      "continueCount": 11,
-      "rate": 0.1325,
-      "avg7": 0.19,
-      "avg7Days": 3
+      "continueCount": 6,
+      "rate": 0.0723,
+      "avg7": 0.1267,
+      "avg7Days": 2
     },
     "2026-11-09": {
       "prevDate": "2026-11-06",
-      "prevCount": 32,
+      "prevCount": 27,
       "continueCount": 9,
-      "rate": 0.2813,
-      "avg7": 0.2128,
-      "avg7Days": 4
+      "rate": 0.3333,
+      "avg7": 0.1956,
+      "avg7Days": 3
     },
     "2026-11-10": {
       "prevDate": "2026-11-09",
-      "prevCount": 51,
-      "continueCount": 17,
-      "rate": 0.3333,
-      "avg7": 0.2369,
-      "avg7Days": 5
+      "prevCount": 54,
+      "continueCount": 19,
+      "rate": 0.3519,
+      "avg7": 0.2346,
+      "avg7Days": 4
     },
     "2026-11-11": {
       "prevDate": "2026-11-10",
       "prevCount": 93,
       "continueCount": 19,
       "rate": 0.2043,
-      "avg7": 0.2315,
-      "avg7Days": 6
+      "avg7": 0.2286,
+      "avg7Days": 5
     },
     "2026-11-12": {
       "prevDate": "2026-11-11",
       "prevCount": 84,
       "continueCount": 11,
       "rate": 0.131,
-      "avg7": 0.2171,
-      "avg7Days": 7
+      "avg7": 0.2123,
+      "avg7Days": 6
     },
     "2026-11-13": {
       "prevDate": "2026-11-12",
       "prevCount": 37,
       "continueCount": 7,
       "rate": 0.1892,
-      "avg7": 0.2084,
+      "avg7": 0.209,
+      "avg7Days": 7
+    },
+    "2026-11-16": {
+      "prevDate": "2026-11-13",
+      "prevCount": 37,
+      "continueCount": 11,
+      "rate": 0.2973,
+      "avg7": 0.2256,
       "avg7Days": 7
     }
   }
