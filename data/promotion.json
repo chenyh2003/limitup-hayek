@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-19T16:49:40.987Z",
+  "updatedAt": "2026-11-20T15:56:49.291Z",
   "window": 7,
   "days": {
     "2026-10-20": {
@@ -133,57 +133,65 @@
     "2026-11-11": {
       "prevDate": "2026-11-10",
       "prevCount": 93,
-      "continueCount": 19,
-      "rate": 0.2043,
-      "avg7": 0.2781,
-      "avg7Days": 2
+      "continueCount": 14,
+      "rate": 0.1505,
+      "avg7": 0.1505,
+      "avg7Days": 1
     },
     "2026-11-12": {
       "prevDate": "2026-11-11",
-      "prevCount": 84,
+      "prevCount": 77,
       "continueCount": 11,
-      "rate": 0.131,
-      "avg7": 0.229,
-      "avg7Days": 3
+      "rate": 0.1429,
+      "avg7": 0.1467,
+      "avg7Days": 2
     },
     "2026-11-13": {
       "prevDate": "2026-11-12",
       "prevCount": 37,
       "continueCount": 7,
       "rate": 0.1892,
-      "avg7": 0.2191,
-      "avg7Days": 4
+      "avg7": 0.1609,
+      "avg7Days": 3
     },
     "2026-11-16": {
       "prevDate": "2026-11-13",
       "prevCount": 37,
       "continueCount": 11,
       "rate": 0.2973,
-      "avg7": 0.2347,
-      "avg7Days": 5
+      "avg7": 0.195,
+      "avg7Days": 4
     },
     "2026-11-17": {
       "prevDate": "2026-11-16",
       "prevCount": 32,
       "continueCount": 6,
       "rate": 0.1875,
-      "avg7": 0.2268,
-      "avg7Days": 6
+      "avg7": 0.1935,
+      "avg7Days": 5
     },
     "2026-11-18": {
       "prevDate": "2026-11-17",
       "prevCount": 36,
       "continueCount": 8,
       "rate": 0.2222,
-      "avg7": 0.2262,
-      "avg7Days": 7
+      "avg7": 0.1983,
+      "avg7Days": 6
     },
     "2026-11-19": {
       "prevDate": "2026-11-18",
       "prevCount": 40,
       "continueCount": 5,
       "rate": 0.125,
-      "avg7": 0.1938,
+      "avg7": 0.1878,
+      "avg7Days": 7
+    },
+    "2026-11-20": {
+      "prevDate": "2026-11-19",
+      "prevCount": 23,
+      "continueCount": 3,
+      "rate": 0.1304,
+      "avg7": 0.1849,
       "avg7Days": 7
     }
   }
