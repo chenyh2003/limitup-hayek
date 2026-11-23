@@ -1,6 +1,6 @@
 {
   "date": "2026-11-23",
-  "capturedAt": "2026-11-23T19:27:55.254Z",
+  "capturedAt": "2026-11-23T19:30:43.296Z",
   "source": "eastmoney:getTopicZTPool",
   "universe": "沪深A股，剔除ST与北交所",
   "analysis": {
@@ -385,7 +385,7 @@
       "floatMv": 2401381767.2000003,
       "firstSeal": "09:38:33",
       "lastSeal": "11:22:54",
-      "broken": 3,
+      "broken": 4,
       "industry": "元件",
       "daysBoard": "2天2板",
       "reason": "石英晶体元器件+碳酸锂",
@@ -1565,7 +1565,7 @@
       "floatMv": 2087341872,
       "firstSeal": "09:43:36",
       "lastSeal": "10:49:30",
-      "broken": 4,
+      "broken": 3,
       "industry": "家居用品",
       "daysBoard": "1天1板",
       "reason": "机器人结构件+卫浴毛巾架+北美头部客户",
