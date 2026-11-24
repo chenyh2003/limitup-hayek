@@ -1,6 +1,6 @@
 {
   "date": "2026-11-24",
-  "capturedAt": "2026-11-24T18:51:14.764Z",
+  "capturedAt": "2026-11-24T18:59:03.735Z",
   "source": "eastmoney:getTopicZTPool",
   "universe": "沪深A股，剔除ST与北交所",
   "analysis": {
@@ -449,7 +449,7 @@
       "floatMv": 4665380661.059999,
       "firstSeal": "09:30:55",
       "lastSeal": "10:08:58",
-      "broken": 4,
+      "broken": 5,
       "industry": "纺织制造",
       "daysBoard": "2天2板",
       "reason": "影视业务+微短剧+国企改革",
