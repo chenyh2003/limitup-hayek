@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-24T19:03:47.819Z",
+  "updatedAt": "2026-11-24T19:06:53.551Z",
   "window": 7,
   "days": {
     "2026-10-20": {
@@ -197,17 +197,17 @@
     "2026-11-23": {
       "prevDate": "2026-11-20",
       "prevCount": 28,
-      "continueCount": 16,
-      "rate": 0.5714,
-      "avg7": 0.2462,
+      "continueCount": 15,
+      "rate": 0.5357,
+      "avg7": 0.2411,
       "avg7Days": 7
     },
     "2026-11-24": {
       "prevDate": "2026-11-23",
-      "prevCount": 145,
-      "continueCount": 30,
-      "rate": 0.2069,
-      "avg7": 0.2487,
+      "prevCount": 138,
+      "continueCount": 29,
+      "rate": 0.2101,
+      "avg7": 0.244,
       "avg7Days": 7
     }
   }
