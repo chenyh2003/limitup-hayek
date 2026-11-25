@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-24T19:06:55.282Z",
+  "updatedAt": "2026-11-25T17:50:39.077Z",
   "days": [
     {
       "date": "2026-10-26",
@@ -506,6 +506,29 @@
       "center": 3.38,
       "centerLabel": "中游",
       "strongestStage": "科技"
+    },
+    {
+      "date": "2026-11-25",
+      "total": 51,
+      "stages": {
+        "科技": 8,
+        "能源": 6,
+        "交通": 1,
+        "制造加工": 23,
+        "外贸": 3,
+        "零售": 5,
+        "终端消费品": 5
+      },
+      "unclassified": 0,
+      "boards": {
+        "first": 37,
+        "second": 5,
+        "thirdPlus": 9,
+        "max": 5
+      },
+      "center": 3.82,
+      "centerLabel": "中游",
+      "strongestStage": "制造加工"
     }
   ]
 }
