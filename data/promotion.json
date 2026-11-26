@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-26T17:49:29.026Z",
+  "updatedAt": "2026-11-26T17:53:09.716Z",
   "window": 7,
   "days": {
     "2026-10-20": {
@@ -164,10 +164,10 @@
     },
     "2026-11-17": {
       "prevDate": "2026-11-16",
-      "prevCount": 28,
+      "prevCount": 32,
       "continueCount": 6,
-      "rate": 0.2143,
-      "avg7": 0.2143,
+      "rate": 0.1875,
+      "avg7": 0.1875,
       "avg7Days": 1
     },
     "2026-11-18": {
@@ -175,47 +175,47 @@
       "prevCount": 36,
       "continueCount": 8,
       "rate": 0.2222,
-      "avg7": 0.2183,
+      "avg7": 0.2049,
       "avg7Days": 2
     },
     "2026-11-19": {
       "prevDate": "2026-11-18",
       "prevCount": 40,
-      "continueCount": 3,
-      "rate": 0.075,
-      "avg7": 0.1705,
+      "continueCount": 5,
+      "rate": 0.125,
+      "avg7": 0.1782,
       "avg7Days": 3
     },
     "2026-11-20": {
       "prevDate": "2026-11-19",
-      "prevCount": 17,
-      "continueCount": 1,
-      "rate": 0.0588,
-      "avg7": 0.1426,
+      "prevCount": 23,
+      "continueCount": 3,
+      "rate": 0.1304,
+      "avg7": 0.1663,
       "avg7Days": 4
     },
     "2026-11-23": {
       "prevDate": "2026-11-20",
-      "prevCount": 23,
-      "continueCount": 13,
-      "rate": 0.5652,
-      "avg7": 0.2271,
+      "prevCount": 28,
+      "continueCount": 16,
+      "rate": 0.5714,
+      "avg7": 0.2473,
       "avg7Days": 5
     },
     "2026-11-24": {
       "prevDate": "2026-11-23",
       "prevCount": 145,
-      "continueCount": 29,
-      "rate": 0.2,
-      "avg7": 0.2226,
+      "continueCount": 30,
+      "rate": 0.2069,
+      "avg7": 0.2406,
       "avg7Days": 6
     },
     "2026-11-25": {
       "prevDate": "2026-11-24",
       "prevCount": 54,
-      "continueCount": 13,
-      "rate": 0.2407,
-      "avg7": 0.2252,
+      "continueCount": 14,
+      "rate": 0.2593,
+      "avg7": 0.2432,
       "avg7Days": 7
     },
     "2026-11-26": {
@@ -223,7 +223,7 @@
       "prevCount": 51,
       "continueCount": 14,
       "rate": 0.2745,
-      "avg7": 0.2338,
+      "avg7": 0.2557,
       "avg7Days": 7
     }
   }
