@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-27T17:16:57.063Z",
+  "updatedAt": "2026-11-27T17:25:45.524Z",
   "window": 7,
   "days": {
     "2026-10-20": {
@@ -228,10 +228,10 @@
     },
     "2026-11-27": {
       "prevDate": "2026-11-26",
-      "prevCount": 64,
-      "continueCount": 28,
-      "rate": 0.4375,
-      "avg7": 0.2858,
+      "prevCount": 65,
+      "continueCount": 29,
+      "rate": 0.4462,
+      "avg7": 0.287,
       "avg7Days": 7
     }
   }
